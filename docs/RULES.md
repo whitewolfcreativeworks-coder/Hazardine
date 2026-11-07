@@ -23,7 +23,7 @@ Each player starts with a small army and keeps the rest of their two chess sets 
 - Shuffle the deck. Each player draws a hand of 3 cards.
 - Each player takes 4 checkers as barricades.
 
-Ivory moves first.
+Ivory moves first, but rolls only **one die** on the opening turn (this offsets the first-player advantage).
 
 ## A turn
 
@@ -67,8 +67,9 @@ If 300 player-turns pass without a winner, the game is a draw (this has not happ
 | Starting army | full, reduced, full with pawns forward | reduced | Faster start; full armies remain a strong option |
 | Sliding range | die value, unlimited | die value | Unlimited makes games very short and swingy |
 | Pawn step | one square, half the die | half the die | One square drags games out and raises draws |
-| Combined dice | yes, no | yes | Small benefit; within noise |
+| Combined dice | yes, no | yes | Shorter, more balanced games; separate dice slightly raise the skill edge |
 | Doubles | none, three actions, four actions | three | Within noise; three adds a moment of excitement |
+| Opening turn | two dice, one die | one die | First player won 54-57% without it, 52% with it |
 | Combat | cards, chess-style capture | cards | Chess capture lengthens games and favours the second player |
 | Card scale | full 2-14, tiered 1-5 | tiered | Full scale lets cards decide too many fights |
 | Hand | blind draw, hand of 3 | hand of 3 | Similar numbers; a hand adds a decision |
@@ -80,3 +81,13 @@ If 300 player-turns pass without a winner, the game is a draw (this has not happ
 | Reward zone | enemy homeland, far back row | enemy homeland | Back row makes rewards rare |
 | Barricades | 0, 4 | 4 | Small effect; gives checkers a job |
 | Victory | king, king or throne | king or throne | Second path adds tension at little cost |
+
+## Optional: Quest mode
+
+Each side runs its own three-room dungeon on the battlefield, tracked with pencil on the [printable quest sheet](../web/public/quest-sheet.html). See EXPERIMENTS.md for how the variants played in simulation.
+
+- **Rooms.** Ivory: the Ford (b11 or g11), the Crypt (c14 or f14), the Vault (a20 or h20). Ebony's are the mirror image (b14/g14, c11/f11, a5/h5). Rooms must be cleared in order.
+- **Trial.** When one of your pieces other than the king ends a move on your next room, draw a card from the deck. Strength + card value must reach 7, 9 and 11 for the three rooms.
+- **Pass.** Mark the room. Ford: take a rook, bishop or knight from reserve to deploy at home. Crypt: gain a shield (spend it to turn a lost defence into a repelled attack). Vault: the quest is complete.
+- **Fail.** The piece goes to jail; the room stays open.
+- **Variants.** *Quest wins*: completing the Vault wins the game. *Boons only*: the Vault grants a queen and frees one prisoner instead. *Linked*: each room your rival clears makes your next trial 1 easier.

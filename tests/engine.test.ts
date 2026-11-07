@@ -131,7 +131,7 @@ describe('movement and dice', () => {
   it('grants extra actions on doubles when configured', () => {
     let found = false;
     for (let seed = 1; seed < 200 && !found; seed++) {
-      const s = createGame(seed, { doubles: 'three' });
+      const s = createGame(seed, { doubles: 'three', firstTurnOneDie: false });
       if (s.rolled.length === 3) found = s.rolled.every((d) => d === s.rolled[0]);
     }
     expect(found).toBe(true);
