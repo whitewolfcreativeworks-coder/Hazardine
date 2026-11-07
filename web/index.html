@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Hazardine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="bar">
+        <h1>Hazardine</h1>
+        <div class="bar-actions">
+          <button id="btn-rules" class="ghost">How to play</button>
+          <button id="btn-new" class="ghost">New game</button>
+        </div>
+      </header>
+      <main class="table">
+        <div class="board-wrap"><div id="board" class="board" role="grid" aria-label="Battlefield"></div></div>
+        <aside class="tray">
+          <section class="turn">
+            <div id="turn-label" class="turn-label"></div>
+            <div id="dice" class="dice" aria-label="Dice left this turn"></div>
+            <div id="status" class="status" aria-live="polite"></div>
+            <div class="controls">
+              <button id="btn-barricade">Place barricade</button>
+              <button id="btn-end" class="primary">End turn</button>
+            </div>
+          </section>
+          <section id="combat" class="combat" hidden></section>
+          <section class="hand-wrap">
+            <h2>Your hand</h2>
+            <p class="hint">Tap a card to choose what you attack with.</p>
+            <div id="hand" class="hand"></div>
+          </section>
+          <section class="camps">
+            <div class="camp" id="camp-0"></div>
+            <div class="camp" id="camp-1"></div>
+          </section>
+          <details class="log-wrap">
+            <summary>Battle log</summary>
+            <ol id="log" class="log"></ol>
+          </details>
+        </aside>
+      </main>
+    </div>
+
+    <dialog id="dlg-new">
+      <form method="dialog">
+        <h2>New game</h2>
+        <label>Opponent
+          <select id="opt-mode">
+            <option value="hvc">Play against the computer</option>
+            <option value="hvh">Two players, one device</option>
+            <option value="cvc">Watch two computers</option>
+          </select>
+        </label>
+        <label>Computer strength
+          <select id="opt-ai">
+            <option value="heuristic:balanced">Steady</option>
+            <option value="heuristic:aggressive">Aggressive</option>
+            <option value="heuristic:defensive">Defensive</option>
+            <option value="heuristic:rusher">Throne rusher</option>
+            <option value="search:balanced">Thinking (slower, stronger)</option>
+          </select>
+        </label>
+        <label>Rules
+          <select id="opt-rules">
+            <option value="default">Current provisional rules</option>
+            <option value="full">Full chess armies</option>
+            <option value="classic">No cards (chess-style captures)</option>
+          </select>
+        </label>
+        <label>Seed (same seed, same dice and cards)
+          <input id="opt-seed" type="number" min="1" />
+        </label>
+        <menu>
+          <button value="cancel" class="ghost">Cancel</button>
+          <button id="btn-start" value="start" class="primary">Start game</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="dlg-reward">
+      <form method="dialog">
+        <h2>Your pawn crossed into enemy land</h2>
+        <p>Choose its reward.</p>
+        <div id="reward-options" class="reward-options"></div>
+      </form>
+    </dialog>
+
+    <dialog id="dlg-rules" class="rules">
+      <form method="dialog">
+        <h2>How to play (provisional rules)</h2>
+        <div id="rules-body"></div>
+        <menu><button class="primary">Got it</button></menu>
+      </form>
+    </dialog>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

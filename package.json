@@ -1,0 +1,32 @@
+{
+  "name": "hazardine",
+  "version": "0.1.0",
+  "description": "Hazardine: a three-board strategy game of chess pieces, dice, cards and capture-and-rescue, with rules shaped by simulation.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "sim": "tsx sim/cli.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whitewolfcreativeworks-coder/hazardine.git"
+  },
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/whitewolfcreativeworks-coder/hazardine/issues"
+  },
+  "homepage": "https://github.com/whitewolfcreativeworks-coder/hazardine#readme",
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.5",
+    "vite-plugin-singlefile": "^2.3.4",
+    "vitest": "^3.2.7"
+  },
+  "type": "module",
+  "private": true
+}
