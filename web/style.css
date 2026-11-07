@@ -252,3 +252,20 @@ dialog .muted { color: #6b5f4e; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* ---------- quest ---------- */
+.room {
+  position: absolute;
+  inset: 18%;
+  transform: rotate(45deg);
+  border-radius: 3px;
+  pointer-events: none;
+}
+.room-0 { border: 2px solid var(--ivory); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5); }
+.room-1 { border: 2px solid var(--ebony); box-shadow: 0 0 0 1px rgba(239, 230, 208, 0.6); }
+.quest-steps { gap: 6px; }
+.step { font-size: 14px; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(239, 230, 208, 0.25); color: var(--muted); }
+.step.done { background: var(--brass); border-color: var(--brass); color: var(--ebony); }
+.step.next { border-color: var(--brass-soft); color: var(--ink); }
+.shield { font-size: 14px; }
+dialog a { color: #6b4a12; font-weight: 700; }

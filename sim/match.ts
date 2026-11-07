@@ -26,6 +26,10 @@ export interface MatchResult {
   actions: number;
   /** Lowest material lead the eventual winner had during the game. */
   winnerMinLead: number | null;
+  questRooms: number;
+  trials: number;
+  trialFails: number;
+  shieldsUsed: number;
 }
 
 export function playMatch(rules: Partial<RuleConfig>, first: AgentSpec, second: AgentSpec, seed: number): MatchResult {
@@ -53,6 +57,10 @@ export function playMatch(rules: Partial<RuleConfig>, first: AgentSpec, second: 
     barricades: st.barricadesPlaced[0] + st.barricadesPlaced[1],
     actions: st.actions[0] + st.actions[1],
     winnerMinLead: s.winner === null ? null : st.minLead[s.winner],
+    questRooms: st.questRooms[0] + st.questRooms[1],
+    trials: st.trials,
+    trialFails: st.trialFails,
+    shieldsUsed: st.shieldsUsed,
   };
 }
 
@@ -75,6 +83,10 @@ export interface Summary {
   skippedTurnRate: number;
   barricadesPerGame: number;
   throneWinShare: number;
+  questWinShare: number;
+  questRoomsPerGame: number;
+  trialsPerGame: number;
+  trialFailRate: number;
   winsBySpec: Record<string, number>;
 }
 
@@ -103,6 +115,10 @@ export function summarize(rs: MatchResult[]): Summary {
     skippedTurnRate: rs.reduce((a, r) => a + r.skipped, 0) / Math.max(1, rs.reduce((a, r) => a + r.turns, 0)),
     barricadesPerGame: mean(rs.map((r) => r.barricades)),
     throneWinShare: decisive.length ? decisive.filter((r) => r.reason === 'throne taken').length / decisive.length : 0,
+    questWinShare: decisive.length ? decisive.filter((r) => r.reason === 'quest complete').length / decisive.length : 0,
+    questRoomsPerGame: mean(rs.map((r) => r.questRooms)),
+    trialsPerGame: mean(rs.map((r) => r.trials)),
+    trialFailRate: rs.reduce((a, r) => a + r.trialFails, 0) / Math.max(1, rs.reduce((a, r) => a + r.trials, 0)),
     winsBySpec,
   };
 }
@@ -125,7 +141,7 @@ export function health(selfPlay: Summary, skillEdge: number): Health {
     balance: Math.max(0, 1 - Math.abs(selfPlay.firstPlayerWinRate - 0.5) * 4),
     decisive: Math.max(0, 1 - selfPlay.drawRate * 3),
     length: band(selfPlay.avgTurns, 40, 110, 60),
-    skill: band(skillEdge, 0.75, 1, 0.25),
+    skill: band(skillEdge, 0.75, 1, 0.3),
     comebacks: band(selfPlay.comebackRate, 0.12, 0.4, 0.15),
     luck: band(selfPlay.cardDecidedRate, 0.1, 0.35, 0.2),
     action: band(selfPlay.capturesPerGame, 4, 30, 6),

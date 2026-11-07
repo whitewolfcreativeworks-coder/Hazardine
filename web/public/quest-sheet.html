@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hazardine Quest Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --ink: #1f1a16; --line: #6e6253; --soft: #efe7d6; --brass: #8a6a22; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #d9d0bd; color: var(--ink); font: 12.5pt/1.4 'Alegreya Sans', 'Gill Sans', sans-serif; }
+  .page { width: 8.5in; min-height: 11in; margin: 0.3in auto; background: #fffdf8; padding: 0.45in 0.5in; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
+  h1 { font: 700 26pt/1 'Alegreya SC', Georgia, serif; margin: 0; }
+  .sub { margin: 4px 0 12px; color: var(--line); }
+  .how { border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; font-size: 11pt; columns: 2; column-gap: 22px; margin-bottom: 14px; }
+  .how p { margin: 0 0 6px; break-inside: avoid; }
+  .side { border: 2px solid var(--ink); border-radius: 8px; padding: 10px 14px 12px; margin-bottom: 14px; break-inside: avoid; }
+  .side h2 { font: 700 18pt/1.1 'Alegreya SC', Georgia, serif; margin: 0 0 2px; display: flex; justify-content: space-between; align-items: baseline; }
+  .side h2 small { font: 400 11pt 'Alegreya Sans', sans-serif; color: var(--line); }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 6px 6px; text-align: left; vertical-align: middle; }
+  th { font-weight: 700; font-size: 10.5pt; color: var(--line); }
+  td.room { font: 700 13pt 'Alegreya SC', Georgia, serif; white-space: nowrap; }
+  td.sq { font-weight: 700; letter-spacing: .02em; white-space: nowrap; }
+  .box { display: inline-block; width: 16px; height: 16px; border: 1.5px solid var(--ink); border-radius: 3px; vertical-align: -3px; margin-right: 4px; }
+  .write { display: inline-block; min-width: 46px; border-bottom: 1px solid var(--ink); height: 1.1em; }
+  .tally { display: flex; gap: 18px; margin-top: 10px; flex-wrap: wrap; }
+  .tally div { display: flex; gap: 6px; align-items: center; }
+  .notes { margin-top: 10px; height: 0.9in; border: 1px dashed var(--line); border-radius: 6px; padding: 4px 8px; color: var(--line); font-size: 10pt; }
+  .print { position: fixed; right: 16px; bottom: 16px; font: 700 14pt 'Alegreya Sans', sans-serif; padding: 10px 18px; border-radius: 999px; border: 0; background: var(--ink); color: #fffdf8; cursor: pointer; }
+  @media print {
+    body { background: none; }
+    .page { margin: 0; box-shadow: none; width: auto; min-height: 0; padding: 0.35in 0.45in; }
+    .print { display: none; }
+  }
+  @media (max-width: 8.6in) { .page { width: auto; margin: 0; padding: 18px; } .how { columns: 1; } }
+</style>
+</head>
+<body>
+<button class="print" onclick="window.print()">Print sheet</button>
+<div class="page">
+  <h1>Hazardine Quest Sheet</h1>
+  <p class="sub">Optional quest mode, provisional rules. Two dungeons run at once: each side has its own three rooms on the battlefield, and the paths cross in the middle.</p>
+  <div class="how">
+    <p><strong>Rooms.</strong> Your next room is either of the two squares listed for it. Clear rooms in order.</p>
+    <p><strong>Trial.</strong> When one of your pieces (not the king) ends a move on your next room, draw a card. Piece strength + card value must reach the target.</p>
+    <p><strong>Card values.</strong> 2-4 = 1, 5-7 = 2, 8-10 = 3, J-Q = 4, K-A = 5. Strength: pawn 2, knight and bishop 4, rook 6, queen 9.</p>
+    <p><strong>Pass</strong>: tick the room and take its boon. <strong>Fail</strong>: the piece goes to jail and the room stays open.</p>
+    <p><strong>Boons.</strong> Ford: a rook, bishop or knight to deploy at home. Crypt: a shield (cross one out to turn a lost defence into a repelled attack). Vault: the quest is complete.</p>
+    <p><strong>Quest wins</strong> variant: completing the Vault wins the game. <strong>Boons only</strong> variant: the Vault gives a queen and frees one prisoner instead. <strong>Linked</strong> variant: each time your rival clears a room, your next target drops by 1 (note it under Ease).</p>
+  </div>
+
+  <section class="side">
+    <h2>Ivory <small>moves first, starts on rows 1-2</small></h2>
+    <table>
+      <tr><th>Room</th><th>Squares</th><th>Target</th><th>Ease</th><th>Cleared</th><th>Boon</th></tr>
+      <tr><td class="room">The Ford</td><td class="sq">b11 or g11</td><td>7</td><td><span class="write"></span></td><td><span class="box"></span></td><td>Rook, bishop or knight</td></tr>
+      <tr><td class="room">The Crypt</td><td class="sq">c14 or f14</td><td>9</td><td><span class="write"></span></td><td><span class="box"></span></td><td>One shield</td></tr>
+      <tr><td class="room">The Vault</td><td class="sq">a20 or h20</td><td>11</td><td><span class="write"></span></td><td><span class="box"></span></td><td>Quest complete</td></tr>
+    </table>
+    <div class="tally">
+      <div>Shields <span class="box"></span><span class="box"></span><span class="box"></span></div>
+      <div>Failed trials <span class="box"></span><span class="box"></span><span class="box"></span><span class="box"></span><span class="box"></span><span class="box"></span></div>
+    </div>
+    <div class="notes">Notes</div>
+  </section>
+
+  <section class="side">
+    <h2>Ebony <small>moves second, starts on rows 23-24</small></h2>
+    <table>
+      <tr><th>Room</th><th>Squares</th><th>Target</th><th>Ease</th><th>Cleared</th><th>Boon</th></tr>
+      <tr><td class="room">The Ford</td><td class="sq">b14 or g14</td><td>7</td><td><span class="write"></span></td><td><span class="box"></span></td><td>Rook, bishop or knight</td></tr>
+      <tr><td class="room">The Crypt</td><td class="sq">c11 or f11</td><td>9</td><td><span class="write"></span></td><td><span class="box"></span></td><td>One shield</td></tr>
+      <tr><td class="room">The Vault</td><td class="sq">a5 or h5</td><td>11</td><td><span class="write"></span></td><td><span class="box"></span></td><td>Quest complete</td></tr>
+    </table>
+    <div class="tally">
+      <div>Shields <span class="box"></span><span class="box"></span><span class="box"></span></div>
+      <div>Failed trials <span class="box"></span><span class="box"></span><span class="box"></span><span class="box"></span><span class="box"></span><span class="box"></span></div>
+    </div>
+    <div class="notes">Notes</div>
+  </section>
+  <p class="sub">Squares use chess notation stretched over three boards: files a-h, ranks 1-24 counted from Ivory's back row.</p>
+</div>
+</body>
+</html>

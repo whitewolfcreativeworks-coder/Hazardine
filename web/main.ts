@@ -13,6 +13,8 @@ import {
   cardValue,
   isRed,
   squareName,
+  questRooms,
+  QUEST_ROOM_NAMES,
   SQUARES,
   type GameState,
   type Action,
@@ -30,6 +32,8 @@ const PRESETS: Record<string, Partial<RuleConfig>> = {
   default: {},
   full: { startingArmy: 'full' },
   classic: { combat: 'none' },
+  quest: { quest: 'win' },
+  questBoons: { quest: 'boons' },
 };
 
 type Mode = 'hvc' | 'hvh' | 'cvc';
@@ -193,6 +197,16 @@ function renderBoard() {
     cell.className = `sq ${terr === 1 ? (dark ? 'mid-dark' : 'mid-light') : dark ? 'home-dark' : 'home-light'}`;
     if (terr !== 1 && (rowOf(s) === 8 || rowOf(s) === 15 || rowOf(s) === 7 || rowOf(s) === 16)) cell.classList.add('frontier');
     if (thrones.includes(s)) cell.classList.add('throne');
+    if (game.rules.quest !== 'off') {
+      for (const q of [0, 1] as Player[]) {
+        if (questRooms(q, game.questStage[q]).includes(s)) {
+          const m = document.createElement('span');
+          m.className = `room room-${q}`;
+          m.title = `${SIDE[q]}'s next room: ${QUEST_ROOM_NAMES[game.questStage[q]]}`;
+          cell.append(m);
+        }
+      }
+    }
     if (lastMove && (lastMove.to === s || lastMove.from === s)) cell.classList.add('last');
     if (pick.t === 'piece' && pick.from === s) cell.classList.add('selected');
     const p = decode(game.board[s]);
@@ -292,6 +306,24 @@ function renderTray() {
     combat.append(verdict);
   }
 
+  const lt = game.lastTrial;
+  if (lt && !lc) {
+    combat.hidden = false;
+    combat.innerHTML = '';
+    const r = document.createElement('div');
+    r.className = 'combat-row';
+    r.innerHTML = `<span class="glyph side-${lt.player}">${GLYPH[lt.kind]}</span><span>${lt.strength}</span><span>+</span>`;
+    r.append(cardEl(lt.card));
+    r.insertAdjacentHTML('beforeend', `<span>=</span><strong>${lt.total}</strong><span class="muted">needs ${lt.target}</span>`);
+    combat.append(r);
+    const v = document.createElement('p');
+    v.className = 'verdict';
+    v.textContent = lt.passed
+      ? `${SIDE[lt.player]} clears ${QUEST_ROOM_NAMES[lt.room]} and gains ${lt.boon}.`
+      : `${QUEST_ROOM_NAMES[lt.room]} claims the ${KIND_NAME[lt.kind].toLowerCase()}. It goes to jail.`;
+    combat.append(v);
+  }
+
   // Hand
   const handWrap = document.querySelector('.hand-wrap') as HTMLElement;
   const human = isHumanTurn();
@@ -347,6 +379,13 @@ function renderTray() {
       div.append(list);
       camp.append(div);
     };
+    if (game.rules.quest !== 'off') {
+      const qd = document.createElement('div');
+      qd.className = 'camp-line';
+      const steps = QUEST_ROOM_NAMES.map((n, i) => `<span class="step${i < game.questStage[q] ? ' done' : i === game.questStage[q] ? ' next' : ''}">${n.replace('The ', '')}</span>`).join('');
+      qd.innerHTML = `<span class="camp-title">Quest</span><span class="camp-list quest-steps">${steps}${game.shields[q] ? `<span class="shield" title="Shields">🛡 ${game.shields[q]}</span>` : ''}</span>`;
+      camp.append(qd);
+    }
     line('In jail', game.jail[q], 'rescue', 'none');
     line('Earned', game.ready[q], 'deploy', 'none');
     const bar = document.createElement('div');
@@ -407,6 +446,11 @@ function rulesHtml(r: RuleConfig) {
   ${r.captureMode === 'jail' ? `<p><strong>Jail.</strong> Captured pieces go to jail. Spend a die of ${r.rescueMinDie} or more to bring one back to your home rows.</p>` : ''}
   ${r.promotionMode !== 'none' ? `<p><strong>Crossing.</strong> A pawn that reaches ${r.promotionZone === 'enemyHome' ? 'the enemy homeland' : 'the far edge'} ${r.promotionMode === 'reinforce' ? 'earns a new piece. Spend any die to deploy it on your home rows.' : r.promotionMode === 'promote' ? 'becomes a stronger piece.' : 'either becomes a stronger piece or earns one at home.'}</p>` : ''}
   ${r.barricades ? `<p><strong>Barricades.</strong> Spend a die to place one of your ${r.barricades} checkers next to your pieces (not in enemy land). They block movement. An adjacent enemy can knock one down with a ${r.demolishMinDie} or higher.</p>` : ''}
+  ${
+    r.quest !== 'off'
+      ? `<p><strong>Quest.</strong> Each side has three rooms (Ford, Crypt, Vault), marked on the board by its colour. When one of your pieces (not the king) ends a move on your next room, draw a card: strength + card must reach ${r.questDifficulty.join(', ')} for the three rooms. Pass and gain a boon: a new piece, then a shield, then ${r.quest === 'win' ? 'victory' : 'a queen and a freed prisoner'}. Fail and the piece goes to jail.${r.questLink ? ` Each room your rival clears makes your next trial ${r.questLink} easier.` : ''} <a href="quest-sheet.html" target="_blank" rel="noopener">Printable quest sheet</a>.</p>`
+      : ''
+  }
   <p class="muted">These rules are provisional. They come from simulation experiments and will change with playtesting.</p>`;
 }
 

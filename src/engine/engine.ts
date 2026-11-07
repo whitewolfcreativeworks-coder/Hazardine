@@ -96,6 +96,11 @@ export interface Stats {
   /** Combats where the card swing decided the result (would have gone the other way with no cards). */
   cardDecided: number;
   skippedTurns: [number, number];
+  /** Quest rooms cleared, trials attempted and failed, shields that saved a piece. */
+  questRooms: [number, number];
+  trials: number;
+  trialFails: number;
+  shieldsUsed: number;
   actions: [number, number];
   /** Lowest material lead each player held at any turn start (negative = trailed). */
   minLead: [number, number];
@@ -130,6 +135,14 @@ export interface GameState {
   stats: Stats;
   /** Most recent combat, for the UI. */
   lastCombat: CombatResult | null;
+  /** Quest progress: rooms cleared (0..3) per player. */
+  questStage: [number, number];
+  /** Shields earned from the quest: each turns one lost defence into a repelled attack. */
+  shields: [number, number];
+  /** Bonus on the next trial, from the other side's progress (linked quests). */
+  questEase: [number, number];
+  /** Most recent quest trial, for the UI. */
+  lastTrial: TrialResult | null;
   log: string[];
   logEnabled: boolean;
 }
@@ -155,6 +168,46 @@ export interface CombatResult {
   attackTotal: number;
   defenseTotal: number;
   attackerWon: boolean;
+  shielded?: boolean;
+}
+
+export interface TrialResult {
+  player: Player;
+  kind: Kind;
+  square: number;
+  room: number;
+  strength: number;
+  card: number;
+  total: number;
+  target: number;
+  passed: boolean;
+  boon: string;
+}
+
+// ---------- quest rooms ----------
+// Each side has three rooms. Ivory's: the Ford (near half of the middle), the Crypt (far half of
+// the middle), the Vault (inside Ebony's homeland). Ebony's are the mirror image. The two dungeons
+// interleave in the middle, so the quests collide.
+
+export const QUEST_ROOM_NAMES = ['The Ford', 'The Crypt', 'The Vault'];
+const IVORY_ROOMS: [number, number][][] = [
+  [
+    [10, 1],
+    [10, 6],
+  ],
+  [
+    [13, 2],
+    [13, 5],
+  ],
+  [
+    [19, 0],
+    [19, 7],
+  ],
+];
+export function questRooms(p: Player, stage: number): number[] {
+  const rooms = IVORY_ROOMS[stage];
+  if (!rooms) return [];
+  return rooms.map(([r, c]) => (p === 0 ? sq(r, c) : sq(ROWS - 1 - r, COLS - 1 - c)));
 }
 
 // ---------- setup ----------
@@ -202,8 +255,16 @@ export function createGame(seed: number, rulesIn?: Partial<RuleConfig> | RuleCon
       skippedTurns: [0, 0],
       actions: [0, 0],
       minLead: [0, 0],
+      questRooms: [0, 0],
+      trials: 0,
+      trialFails: 0,
+      shieldsUsed: 0,
     },
     lastCombat: null,
+    questStage: [0, 0],
+    shields: [0, 0],
+    questEase: [0, 0],
+    lastTrial: null,
     log: [],
     logEnabled: !!opts.log,
   };
@@ -263,7 +324,11 @@ export function cloneState(s: GameState): GameState {
       skippedTurns: [...s.stats.skippedTurns],
       actions: [...s.stats.actions],
       minLead: [...s.stats.minLead],
+      questRooms: [...s.stats.questRooms],
     },
+    questStage: [s.questStage[0], s.questStage[1]],
+    shields: [s.shields[0], s.shields[1]],
+    questEase: [s.questEase[0], s.questEase[1]],
     log: s.logEnabled ? s.log.slice() : s.log,
   };
 }
@@ -310,6 +375,7 @@ function startTurn(s: GameState) {
     if (s.rules.doubles === 'three') dice = [a, a, a];
     else if (s.rules.doubles === 'four') dice = [a, a, a, a];
   }
+  if (s.turn === 0 && s.rules.firstTurnOneDie) dice = [a];
   s.dice = dice;
   s.rolled = dice.slice();
   const lead = material(s, s.toMove) - material(s, (1 - s.toMove) as Player);
@@ -632,7 +698,14 @@ function resolveCombat(s: GameState, a: Extract<Action, { t: 'move' }>): boolean
   s.discard.push(attackCard, defenseCard);
   const attackTotal = attackBase + cardValue(attackCard, s.rules);
   const defenseTotal = defenseBase + cardValue(defenseCard, s.rules);
-  const won = attackTotal > defenseTotal;
+  let won = attackTotal > defenseTotal;
+  let shielded = false;
+  if (won && s.shields[defender] > 0) {
+    s.shields[defender]--;
+    s.stats.shieldsUsed++;
+    won = false;
+    shielded = true;
+  }
   s.stats.combats++;
   if (won) s.stats.attackerWins++;
   const baseFavorsAttacker = attackBase > defenseBase;
@@ -651,19 +724,21 @@ function resolveCombat(s: GameState, a: Extract<Action, { t: 'move' }>): boolean
     attackTotal,
     defenseTotal,
     attackerWon: won,
+    shielded,
   };
   log(
     s,
-    `${ak}${squareName(a.from)} attacks ${dk}${squareName(a.to)}: ${attackBase}+${cardLabel(attackCard)}=${attackTotal} vs ${defenseBase}+${cardLabel(defenseCard)}=${defenseTotal} → ${won ? 'captured' : 'repelled'}`,
+    `${ak}${squareName(a.from)} attacks ${dk}${squareName(a.to)}: ${attackBase}+${cardLabel(attackCard)}=${attackTotal} vs ${defenseBase}+${cardLabel(defenseCard)}=${defenseTotal} → ${shielded ? 'blocked by a shield' : won ? 'captured' : 'repelled'}`,
   );
   return won;
 }
 
 /** Apply an action in place. Assumes the action came from legalActions(s). */
-export function applyAction(s: GameState, a: Action): void {
+export function applyAction(s: GameState, a: Action, opts: { forceTrial?: boolean } = {}): void {
   if (s.winner !== null || s.draw) return;
   const p = s.toMove;
   s.lastCombat = null;
+  s.lastTrial = null;
   if (a.t === 'end') {
     if (s.dice.length === s.rolled.length) s.stats.skippedTurns[p] += legalActions(s).length === 1 ? 1 : 0;
     endTurn(s);
@@ -716,6 +791,10 @@ export function applyAction(s: GameState, a: Action): void {
           s.winReason = 'throne taken';
           return;
         }
+        if (s.rules.quest !== 'off' && isQuestRoom(s, p, a.to) && kindOf(newCode) !== 'K') {
+          runTrial(s, a.to, opts.forceTrial);
+          if (s.winner !== null) return;
+        }
       }
       break;
     }
@@ -747,6 +826,74 @@ export function applyAction(s: GameState, a: Action): void {
     }
   }
   if (s.dice.length === 0) endTurn(s);
+}
+
+/** True if `square` is one of player p's rooms for their current quest stage. */
+export function isQuestRoom(s: GameState, p: Player, square: number): boolean {
+  return s.questStage[p] < 3 && questRooms(p, s.questStage[p]).includes(square);
+}
+
+export function trialTarget(s: GameState, p: Player): number {
+  const d = s.rules.questDifficulty[s.questStage[p]] ?? 99;
+  return d - s.questEase[p];
+}
+
+/** A piece entering one of its own quest rooms faces a trial: strength + a blind card must reach the target. */
+function runTrial(s: GameState, square: number, force?: boolean) {
+  const p = s.toMove;
+  const code = s.board[square];
+  const kind = kindOf(code);
+  const room = s.questStage[p];
+  const target = trialTarget(s, p);
+  const card = drawCard(s);
+  s.discard.push(card);
+  const strength = s.rules.strength[kind];
+  const total = strength + cardValue(card, s.rules);
+  const passed = force ?? total >= target;
+  s.stats.trials++;
+  let boon = '';
+  if (passed) {
+    s.questStage[p]++;
+    s.questEase[p] = 0;
+    s.stats.questRooms[p]++;
+    if (s.rules.questLink) s.questEase[1 - p] += s.rules.questLink;
+    if (room === 0) {
+      const k = (['R', 'B', 'N'] as Kind[]).find((x) => s.reserve[p][x] > 0);
+      if (k) {
+        s.reserve[p][k]--;
+        s.ready[p].push(k);
+        boon = `a ${k} reinforcement`;
+      }
+    } else if (room === 1) {
+      s.shields[p]++;
+      boon = 'a shield';
+    } else if (s.rules.quest === 'win') {
+      s.winner = p;
+      s.winReason = 'quest complete';
+      boon = 'victory';
+    } else {
+      if (s.reserve[p].Q > 0) {
+        s.reserve[p].Q--;
+        s.ready[p].push('Q');
+      }
+      const freed = s.jail[p].shift();
+      if (freed) s.ready[p].push(freed);
+      boon = 'a queen and a freed prisoner';
+    }
+  } else {
+    s.stats.trialFails++;
+    s.board[square] = 0;
+    if (s.rules.captureMode === 'jail') s.jail[p].push(kind);
+    else s.reserve[p][kind]++;
+  }
+  s.lastTrial = { player: p, kind, square, room, strength, card, total, target, passed, boon };
+  log(s, `${kind} enters ${QUEST_ROOM_NAMES[room]}: ${strength}+${cardLabel(card)}=${total} vs ${target} → ${passed ? `cleared, gains ${boon}` : 'falls, taken to jail'}`);
+}
+
+/** Probability a piece of the given strength passes a trial with the given target. */
+export function trialPassProbability(rules: RuleConfig, strength: number, target: number): number {
+  const dist = cardValueDistribution(rules);
+  return dist.filter((v) => strength + v >= target).length / dist.length;
 }
 
 /** Convenience: true when the only legal action is ending the turn. */

@@ -19,6 +19,8 @@ export interface RuleConfig {
   pawnMode: 'one' | 'half';
   /** Allow spending both dice on a single long move (sum of the two values). */
   combineDice: boolean;
+  /** Offset the first-player advantage: the opening turn uses only one die. */
+  firstTurnOneDie: boolean;
   /** What rolling doubles grants: nothing extra, a third action, or four actions. */
   doubles: 'none' | 'three' | 'four';
 
@@ -58,6 +60,17 @@ export interface RuleConfig {
   /** Player-turns before the game is declared a draw. */
   maxTurns: number;
 
+  /**
+   * Optional quest layer: each side runs its own three-room "dungeon" on the battlefield,
+   * tracked on a printable sheet. 'off', 'boons' (each cleared room grants a boon), or
+   * 'win' (boons, and clearing the final room wins the game).
+   */
+  quest: 'off' | 'boons' | 'win';
+  /** Trial target for each room: the piece's strength plus a card must reach it. */
+  questDifficulty: number[];
+  /** When one side clears a room, the other side's next trial gets this much easier. */
+  questLink: number;
+
   /** Base combat strength of each unit class. */
   strength: Record<Kind, number>;
 }
@@ -77,6 +90,7 @@ export const DEFAULT_RULES: RuleConfig = {
   rangeMode: 'die',
   pawnMode: 'half',
   combineDice: true,
+  firstTurnOneDie: false,
   doubles: 'three',
   combat: 'cards',
   cardScale: 'tiered',
@@ -94,6 +108,9 @@ export const DEFAULT_RULES: RuleConfig = {
   demolishMinDie: 4,
   victory: 'kingOrThrone',
   maxTurns: 300,
+  quest: 'off',
+  questDifficulty: [7, 9, 11],
+  questLink: 0,
   strength: { ...DEFAULT_STRENGTH },
 };
 
@@ -102,5 +119,6 @@ export function makeRules(overrides: Partial<RuleConfig> = {}): RuleConfig {
     ...DEFAULT_RULES,
     ...overrides,
     strength: { ...DEFAULT_RULES.strength, ...(overrides.strength ?? {}) },
+    questDifficulty: (overrides.questDifficulty ?? DEFAULT_RULES.questDifficulty).slice(),
   };
 }

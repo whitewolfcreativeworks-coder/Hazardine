@@ -33,6 +33,11 @@ import {
   decode,
   randInt,
   nextRandom,
+  shuffle,
+  questRooms,
+  isQuestRoom,
+  trialTarget,
+  trialPassProbability,
 } from '../engine';
 
 export interface Agent {
@@ -56,17 +61,20 @@ export interface Weights {
   barricade: number;
   /** Multiplier on the downside of a risky attack (>1 = more cautious). */
   riskAversion: number;
+  /** Value of quest progress (only used when quests are on). */
+  quest: number;
 }
 
 export const PERSONALITIES: Record<string, Weights> = {
-  balanced: { material: 1, jailed: 0.4, ready: 0.8, advance: 0.08, pawnAdvance: 0.15, middle: 0.3, kingSafety: 1.2, kingGuard: 0.4, thronePressure: 0.6, barricade: 0.3, riskAversion: 1 },
-  aggressive: { material: 1.3, jailed: 0.3, ready: 0.6, advance: 0.15, pawnAdvance: 0.1, middle: 0.3, kingSafety: 0.6, kingGuard: 0.2, thronePressure: 0.8, barricade: 0.1, riskAversion: 0.6 },
-  defensive: { material: 1, jailed: 0.5, ready: 0.8, advance: 0.03, pawnAdvance: 0.08, middle: 0.2, kingSafety: 2.2, kingGuard: 0.9, thronePressure: 0.3, barricade: 0.8, riskAversion: 1.6 },
-  rusher: { material: 0.8, jailed: 0.2, ready: 0.5, advance: 0.25, pawnAdvance: 0.15, middle: 0.2, kingSafety: 0.8, kingGuard: 0.2, thronePressure: 1.6, barricade: 0.05, riskAversion: 0.8 },
-  promoter: { material: 1, jailed: 0.3, ready: 1.2, advance: 0.05, pawnAdvance: 0.45, middle: 0.2, kingSafety: 1, kingGuard: 0.3, thronePressure: 0.4, barricade: 0.2, riskAversion: 1 },
-  rescuer: { material: 1, jailed: 0.1, ready: 0.8, advance: 0.06, pawnAdvance: 0.12, middle: 0.3, kingSafety: 1.2, kingGuard: 0.4, thronePressure: 0.5, barricade: 0.3, riskAversion: 1.1 },
-  territorial: { material: 1, jailed: 0.4, ready: 0.7, advance: 0.06, pawnAdvance: 0.12, middle: 1, kingSafety: 1.1, kingGuard: 0.4, thronePressure: 0.4, barricade: 0.5, riskAversion: 1 },
-  conservative: { material: 1.1, jailed: 0.6, ready: 0.9, advance: 0.04, pawnAdvance: 0.1, middle: 0.25, kingSafety: 1.6, kingGuard: 0.6, thronePressure: 0.4, barricade: 0.5, riskAversion: 2 },
+  balanced: { material: 1, jailed: 0.4, ready: 0.8, advance: 0.08, pawnAdvance: 0.15, middle: 0.3, kingSafety: 1.2, kingGuard: 0.4, thronePressure: 0.6, barricade: 0.3, riskAversion: 1, quest: 1 },
+  aggressive: { material: 1.3, jailed: 0.3, ready: 0.6, advance: 0.15, pawnAdvance: 0.1, middle: 0.3, kingSafety: 0.6, kingGuard: 0.2, thronePressure: 0.8, barricade: 0.1, riskAversion: 0.6, quest: 1 },
+  defensive: { material: 1, jailed: 0.5, ready: 0.8, advance: 0.03, pawnAdvance: 0.08, middle: 0.2, kingSafety: 2.2, kingGuard: 0.9, thronePressure: 0.3, barricade: 0.8, riskAversion: 1.6, quest: 1 },
+  rusher: { material: 0.8, jailed: 0.2, ready: 0.5, advance: 0.25, pawnAdvance: 0.15, middle: 0.2, kingSafety: 0.8, kingGuard: 0.2, thronePressure: 1.6, barricade: 0.05, riskAversion: 0.8, quest: 1 },
+  promoter: { material: 1, jailed: 0.3, ready: 1.2, advance: 0.05, pawnAdvance: 0.45, middle: 0.2, kingSafety: 1, kingGuard: 0.3, thronePressure: 0.4, barricade: 0.2, riskAversion: 1, quest: 1 },
+  rescuer: { material: 1, jailed: 0.1, ready: 0.8, advance: 0.06, pawnAdvance: 0.12, middle: 0.3, kingSafety: 1.2, kingGuard: 0.4, thronePressure: 0.5, barricade: 0.3, riskAversion: 1.1, quest: 1 },
+  territorial: { material: 1, jailed: 0.4, ready: 0.7, advance: 0.06, pawnAdvance: 0.12, middle: 1, kingSafety: 1.1, kingGuard: 0.4, thronePressure: 0.4, barricade: 0.5, riskAversion: 1, quest: 1 },
+  quester: { material: 0.9, jailed: 0.4, ready: 0.8, advance: 0.06, pawnAdvance: 0.1, middle: 0.3, kingSafety: 1, kingGuard: 0.4, thronePressure: 0.4, barricade: 0.2, riskAversion: 1, quest: 2.5 },
+  conservative: { material: 1.1, jailed: 0.6, ready: 0.9, advance: 0.04, pawnAdvance: 0.1, middle: 0.25, kingSafety: 1.6, kingGuard: 0.6, thronePressure: 0.4, barricade: 0.5, riskAversion: 2, quest: 1 },
 };
 
 const WIN = 100000;
@@ -133,6 +141,25 @@ export function evaluate(s: GameState, p: Player, w: Weights): number {
     t += w.barricade * 0.3 * s.barricadeStock[q];
     score += sign * t;
   }
+  // Quest progress: rooms cleared, shields, and how close the nearest piece is to the next room.
+  if (s.rules.quest !== 'off' && w.quest > 0) {
+    for (const q of [0, 1] as Player[]) {
+      const sign = q === p ? 1 : -1;
+      const stage = s.questStage[q];
+      let t = stage * (s.rules.quest === 'win' ? 14 : 9) + s.shields[q] * 3;
+      if (stage < 3) {
+        const rooms = questRooms(q, stage);
+        let best = 99;
+        for (let i = 0; i < SQUARES; i++) {
+          const c = board[i];
+          if (!c || ((c - 1) >> 3 & 1) !== q || KINDS[(c - 1) & 7] === 'K') continue;
+          for (const r of rooms) best = Math.min(best, dist(i, r));
+        }
+        if (best < 99) t += Math.max(0, 8 - best) * 0.5 * (stage === 2 && s.rules.quest === 'win' ? 2 : 1);
+      }
+      score += sign * w.quest * t;
+    }
+  }
   // Jail: an imprisoned piece keeps part of its value (it might come back).
   for (const q of [0, 1] as Player[]) {
     const sign = q === p ? 1 : -1;
@@ -167,6 +194,18 @@ export function scoreAction(s: GameState, a: Action, w: Weights): number {
     // Saving good cards: small penalty for spending a high card.
     const cardCost = handCard !== undefined ? cardValue(handCard, s.rules) * 0.15 : 0;
     return ev + down - cardCost;
+  }
+  if (a.t === 'move' && s.rules.quest !== 'off' && isQuestRoom(s, p, a.to) && decode(s.board[a.from])!.kind !== 'K') {
+    const kind = decode(s.board[a.from])!.kind;
+    const prob = trialPassProbability(s.rules, s.rules.strength[kind], trialTarget(s, p));
+    const pass = cloneState(s);
+    applyAction(pass, a, { forceTrial: true });
+    const fail = cloneState(s);
+    applyAction(fail, a, { forceTrial: false });
+    const base = evaluate(s, p, w);
+    const evFail = evaluate(fail, p, w);
+    const down = Math.min(0, evFail - base) * (1 - prob) * (w.riskAversion - 1);
+    return evaluate(pass, p, w) * prob + evFail * (1 - prob) + down;
   }
   const c = cloneState(s);
   applyAction(c, a);
@@ -282,6 +321,7 @@ export class SearchAgent implements Agent {
         const c = cloneState(s);
         c.logEnabled = false;
         c.rng = (nextRandom(this.r) * 4294967296) >>> 0 || 1; // no peeking at future dice/cards
+        shuffle(c, c.deck);
         applyAction(c, a);
         // Finish our turn, then play the opponent's whole reply.
         let switches = c.toMove === p ? 0 : 1;
@@ -309,6 +349,8 @@ export function makeAgent(spec: AgentSpec, seed: number): Agent {
   const [type, pers = 'balanced'] = spec.split(':');
   if (type === 'random') return new RandomAgent(seed);
   if (type === 'search') return new SearchAgent(pers, seed);
+  // A blundering player: same judgement, but heavy noise on every choice.
+  if (type === 'novice') return Object.assign(new HeuristicAgent('balanced', seed, 6), { name: 'novice' });
   return new HeuristicAgent(pers, seed);
 }
 

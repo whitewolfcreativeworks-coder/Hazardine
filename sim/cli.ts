@@ -13,7 +13,7 @@ import { DEFAULT_RULES, type RuleConfig } from '../src/engine';
 import { PERSONALITIES } from '../src/ai/agents';
 import { runJobs, pairedJobs, type TaggedResult } from './runner';
 import { summarize, health, type Summary } from './match';
-import { VARIANTS, CANDIDATES } from './variants';
+import { VARIANTS, CANDIDATES, QUESTS } from './variants';
 
 const args = process.argv.slice(2);
 const cmd = args[0] ?? 'batch';
@@ -35,19 +35,26 @@ function skillEdge(rs: TaggedResult[], strong: string): number {
 async function evaluateConfig(name: string, rules: Partial<RuleConfig>, games: number, skillGames: number, seed0 = 1) {
   const jobs = [
     ...pairedJobs(rules, 'heuristic:balanced', 'heuristic:balanced', games, seed0, 'self'),
-    ...pairedJobs(rules, 'search:balanced', 'heuristic:balanced', skillGames, seed0 + 50000, 'skill'),
+    ...pairedJobs(rules, 'heuristic:balanced', 'novice', skillGames, seed0 + 50000, 'skill'),
   ];
   const rs = await runJobs(jobs);
   const self = summarize(rs.filter((r) => r.tag === 'self'));
   const edge = skillEdge(
     rs.filter((r) => r.tag === 'skill'),
-    'search:balanced',
+    'heuristic:balanced',
   );
   const h = health(self, edge);
   return { name, rules, summary: self, skillEdge: edge, health: h };
 }
 
 type Row = Awaited<ReturnType<typeof evaluateConfig>>;
+
+function questTable(rows: Row[]): string {
+  return (
+    '| Variant | Quest wins | Rooms cleared/game | Trials/game | Trials failed |\n|---|---|---|---|---|\n' +
+    rows.map((r) => `| ${r.name} | ${pct(r.summary.questWinShare)} | ${f1(r.summary.questRoomsPerGame)} | ${f1(r.summary.trialsPerGame)} | ${pct(r.summary.trialFailRate)} |`).join('\n')
+  );
+}
 
 function table(rows: Row[]): string {
   const head =
@@ -70,7 +77,8 @@ async function sweep() {
   const round = opt('round', '1');
   const base = opt('base', '');
   const baseRules: Partial<RuleConfig> = base ? JSON.parse(base) : {};
-  const variants = opt('set', 'variants') === 'candidates' ? CANDIDATES() : VARIANTS(baseRules);
+  const set = opt('set', 'variants');
+  const variants = set === 'candidates' ? CANDIDATES() : set === 'quests' ? QUESTS() : VARIANTS(baseRules);
   const rows: Row[] = [];
   const t0 = Date.now();
   for (const [name, overrides] of Object.entries(variants)) {
@@ -81,7 +89,7 @@ async function sweep() {
   }
   rows.sort((a, b) => b.health.score - a.health.score);
   writeFileSync(new URL(`sweep-round${round}.json`, OUT), JSON.stringify({ games, skill, baseRules, rows }, null, 2));
-  writeFileSync(new URL(`sweep-round${round}.md`, OUT), `# Sweep round ${round}\n\nSelf-play: ${games} games per variant (heuristic vs heuristic, seats alternated). Skill edge: ${skill} games, search agent (lookahead) vs heuristic agent; higher means better play wins more often, i.e. less luck.\n\n${table(rows)}\n`);
+  writeFileSync(new URL(`sweep-round${round}.md`, OUT), `# Sweep round ${round}\n\nSelf-play: ${games} games per variant (heuristic vs heuristic, seats alternated). Skill edge: ${skill} games, a careful heuristic player vs a blundering one (same judgement, heavy noise); higher means better play wins more often, i.e. less luck.\n\n${table(rows)}\n${set === 'quests' ? '\n## Quest detail\n\n' + questTable(rows) + '\n' : ''}`);
   console.log('\n' + table(rows));
 }
 
