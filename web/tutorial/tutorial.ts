@@ -180,6 +180,10 @@ function renderPanels() {
   } else if (lt) {
     mid.className = 'panel panel-mid fight';
     mid.innerHTML = `<div class="combat-row"><span class="glyph side-${lt.player}">${GLYPH[lt.kind]}</span><span>${lt.strength}</span><span>+</span>${cardHtml(lt.card)}<span>=</span><strong>${lt.total}</strong><span class="needs">needs ${lt.target}</span></div><p class="verdict">${lt.passed ? `Room cleared: ${lt.boon}.` : 'The dungeon takes the piece.'}</p>`;
+  } else if (s.pendingMuster) {
+    const pm = s.pendingMuster;
+    mid.className = 'panel panel-mid fight';
+    mid.innerHTML = `<h3>Muster roll</h3><div class="combat-row">${pm.rolls.map((d) => `<span class="die-num">${d}</span><span class="glyph side-${pm.player}">${GLYPH[s.rules.musterMap[d - 1]]}</span>`).join('<span class="muted">or</span>')}</div>`;
   } else if (s.hands[p].length && s.rules.handSize && chapterIndex >= 3) {
     mid.className = 'panel panel-mid';
     mid.innerHTML = `<h3>${SIDE[p]}'s hand</h3><div class="hand">${s.hands[p].map((c) => cardHtml(c)).join('')}</div>`;

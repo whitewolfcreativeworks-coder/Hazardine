@@ -172,3 +172,4 @@ body.recording .transport, body.recording .chapters, body.recording .credit { di
 
 .stage .ground-note { color: var(--muted); font-size: 15px; margin-left: 6px; }
 .stage .army-color { font-size: 11px; padding: 2px 6px; }
+.stage .die-num { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 7px; background: var(--ivory); color: var(--ebony); font-weight: 700; }

@@ -64,6 +64,25 @@ Throne rushers (73%) and aggressive players (72%) lead, balanced play is close (
 
 All four are balanced. The +1 skill edge looked low, so it was rechecked with 600 games each: +1, +2 and no rule all scored about 78%, so that dip was noise. **Adopted: own-color ground +2.** It is one rule, it ties the checker colors to the board, and it makes every square in the middle a choice without hurting balance or skill.
 
+## Muster (600 games each, 300 skill games)
+
+[Table](results/sweep-roundmuster.md). Creator's idea: a piece entering the battle zone unlocks a new piece, chosen from two dice and placed on the back row.
+
+| Variant | First-player wins | Captures/game | Musters/game | Comebacks | Skill edge |
+|---|---|---|---|---|---|
+| No muster | 51% | 7.6 | 0 | 43% | 79% |
+| **Each piece once, 6 = rook** | **52%** | **11.2** | **11.2** | **67%** | **77%** |
+| Each piece once, 6 = queen | 52% | 8.6 | 9.9 | 64% | 67% |
+| Every entry | 48% | 9.1 | 10.9 | 62% | 65% |
+| Once per turn | 48% | 9.0 | 10.9 | 62% | 65% |
+| Each piece once, full armies | 46% | 14.9 | 9.5 | 68% | 72% |
+| Each piece once, no pawn reward | 48% | 8.8 | 10.2 | 55% | 61% |
+
+- Musters keep the board full: about ten new pieces a game, more fights, and comebacks in two games out of three.
+- A queen on a lucky 6 is the problem: skill edge falls from 79% to 67%. With 6 = rook it stays at 77%.
+- The pawn reward is still needed; removing it made games luckier.
+- The health score ranks muster below the core game because its comeback band was set at 12-40%. That band was my guess at "enough but not too many", not a measure of fun; the creator prefers the livelier game. **Adopted: each piece once, 6 = rook.**
+
 ## Quest mode ("two dungeons") (400 games each, 200 skill games)
 
 [Table](results/sweep-roundquests.md). Each side clears three mirrored rooms with card trials (see RULES.md).

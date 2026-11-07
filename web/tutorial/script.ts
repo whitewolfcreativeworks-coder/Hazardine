@@ -51,6 +51,11 @@ export const LINES: Record<string, string> = {
   zone2: 'In the battle zone, a piece fighting from a square of its own color gets two extra points, attacking or defending. Pick your ground before you strike.',
   zone3: "Ivory's rook stands on red, so it attacks at eight. Ebony's bishop stands on black, so it defends at six. The cards add the rest, and the rook wins.",
 
+  muster1: "Here's what keeps the battle fresh. The first time each of your pieces enters the battle zone, it calls up a new piece. This is called a muster.",
+  muster2: 'Roll two dice and choose one. One or two is a pawn. Three, a knight. Four, a bishop. Five or six, a rook.',
+  muster3: 'Ivory rolls a two and a five, and takes the rook. New pieces always start on your very back row.',
+  muster4: "You can only call up pieces still in your supply. If a die's piece has run out, that die doesn't count. Queens never come from a muster; only a pawn that crosses the whole field can earn one.",
+
   jail1: "Captured pieces aren't gone. They go to jail.",
   jail2: 'Roll a six, and you can spend it to bring a prisoner home to your back two rows.',
   jail3: "Rescue costs your best roll, so it's always a choice: free a prisoner, or press the attack.",
@@ -84,7 +89,7 @@ export const LINES: Record<string, string> = {
   quest5: 'Each room gives a boon: a new piece, then a shield that blocks one capture, then the quest itself. Fail a trial, and the dungeon sends your piece to jail.',
 
   live1: "Let's finish with a real game between two computer players. Ivory plays aggressively. Ebony plays a balanced game.",
-  live2: 'Ivory wins by capturing the king. Notice how many fights were decided before a single card was turned.',
+  live2: 'Ivory wins by capturing the king. Notice how every piece that reached the battle zone called up another, so the fighting never thinned out.',
   outro: "That's Hazardine. Every rule is still provisional, so play it, push it, and tell us what you find.",
 };
 
@@ -245,7 +250,8 @@ export const CHAPTERS: Chapter[] = [
       st.focus({ squares: [sq(5, 3)], targets: [sq(10, 3)] });
       await st.say('move6');
       await st.play(s, find(s, moveTo(sq(5, 3), sq(10, 3))));
-      st.focus({});
+      s.pendingMuster = null; // musters are explained in their own chapter
+      st.show(s);
       await st.wait(600);
     },
   },
@@ -311,6 +317,33 @@ export const CHAPTERS: Chapter[] = [
       await st.wait(4200);
       await st.play(s, find(s, moveTo(sq(10, 1), sq(11, 1), (a) => a.card === 0)));
       await say;
+    },
+  },
+  {
+    id: 'muster',
+    title: 'Calling up new pieces',
+    async run(st) {
+      const s = fresh([3, 4]);
+      put(s, 0, 'R', 6, 2);
+      put(s, 0, 'N', 0, 1);
+      put(s, 0, 'P', 1, 3);
+      put(s, 1, 'B', 13, 5);
+      put(s, 1, 'P', 21, 2);
+      st.show(s);
+      st.focus({ territory: 1, squares: [sq(6, 2)] });
+      await st.say('muster1');
+      await st.play(s, find(s, moveTo(sq(6, 2), sq(9, 2))));
+      // Show a fixed muster roll so the narration matches.
+      s.pendingMuster = { player: 0, rolls: [2, 5], options: ['P', 'R'] };
+      st.show(s);
+      await st.say('muster2');
+      const say = st.say('muster3');
+      await st.wait(1600);
+      await st.play(s, find(s, (a) => a.t === 'muster' && a.kind === 'R' && a.to === sq(0, 6)));
+      st.focus({ squares: [sq(0, 6)] });
+      await say;
+      await st.say('muster4');
+      st.focus({});
     },
   },
   {
@@ -509,4 +542,4 @@ export const CHAPTERS: Chapter[] = [
 ];
 
 /** The closing demonstration game (seed and agents chosen for a lively, typical game). */
-export const LIVE_GAME = { seed: 50, ivory: 'heuristic:aggressive', ebony: 'heuristic:balanced' };
+export const LIVE_GAME = { seed: 10, ivory: 'heuristic:aggressive', ebony: 'heuristic:balanced' };

@@ -35,7 +35,7 @@ const PRESETS: Record<string, Partial<RuleConfig>> = {
   default: {},
   full: { startingArmy: 'full' },
   classic: { combat: 'none' },
-  muster: { muster: 'firstEntry' },
+  nomuster: { muster: 'off' },
   quest: { quest: 'win', firstTurnOneDie: false },
   questBoons: { quest: 'boons', firstTurnOneDie: false },
 };
@@ -544,3 +544,6 @@ $('btn-rules').onclick = () => {
 window.addEventListener('resize', () => renderBoard());
 
 newGame();
+
+// Test hook for automated browser checks (harmless in normal play).
+(window as unknown as { __hazardine: unknown }).__hazardine = { get game() { return game; }, take, legalActions };

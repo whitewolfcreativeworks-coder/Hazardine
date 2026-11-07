@@ -48,6 +48,8 @@ Ivory moves first, but rolls only **one die** on the opening turn (this offsets 
 
 **Barricade.** Ivory's checkers are red, Ebony's are black. Spend any die to place one of your checkers on an empty square next to one of your pieces, in your homeland or the middle. Barricades block movement for both sides. An enemy piece next to a barricade can knock it down with a die of 4 or more.
 
+**Muster.** The first time each of your pieces enters the battle zone, it calls up a new piece. Roll two dice and choose one: 1-2 = pawn, 3 = knight, 4 = bishop, 5-6 = rook. Place that piece free on any empty square of your back row. You can only take a piece still in your supply; if a die's piece has run out, that die doesn't count. If neither die gives an available piece, or your back row is full, the muster is lost. Mustering costs no action. Each piece gets **one** muster roll ever, even if it leaves the battle zone and comes back, and even if that roll was lost. Pieces that join later (mustered, deployed or rescued from jail) get their own single roll. Queens never come from a muster.
+
 **Deploy.** Spend any die to place an earned reinforcement on an empty square in your back two rows.
 
 ## Crossing the field
@@ -82,6 +84,7 @@ If 300 player-turns pass without a winner, the game is a draw (this has not happ
 | Reward zone | enemy homeland, far back row | enemy homeland | Back row makes rewards rare |
 | Barricades | 0, 4 | 4 | Small effect; gives checkers a job |
 | Victory | king, king or throne | king or throne | Second path adds tension at little cost |
+| Muster | off, each piece once, every entry, once per turn; 6 = queen or rook | each piece once, 6 = rook | Constant fresh pieces and more comebacks; queens from a die roll made skill matter much less |
 | Battle zone | nothing special, own-color ground +1 or +2, attacker charge card | own-color ground +2 | Gives the middle and the checker colors a meaning; balance and skill unchanged |
 
 ## Optional: Quest mode
