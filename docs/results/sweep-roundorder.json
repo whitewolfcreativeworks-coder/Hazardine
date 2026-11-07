@@ -1,0 +1,146 @@
+{
+  "games": 600,
+  "skill": 300,
+  "baseRules": {},
+  "rows": [
+    {
+      "name": "no muster, entering stops",
+      "rules": {
+        "enterZone": "stop",
+        "muster": "off"
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.535593220338983,
+        "drawRate": 0.016666666666666666,
+        "avgTurns": 49.03666666666667,
+        "medianTurns": 40,
+        "capturesPerGame": 7.53,
+        "rescuesPerGame": 2.8,
+        "rewardsPerGame": 2.4433333333333334,
+        "combatsPerGame": 9.46,
+        "upsetRate": 0.09513742071881606,
+        "cardDecidedRate": 0.23608174770965468,
+        "attackerWinRate": 0.7959830866807611,
+        "comebackRate": 0.45084745762711864,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.22,
+        "throneWinShare": 0.12203389830508475,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "mustersPerGame": 0,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 590
+        }
+      },
+      "skillEdge": 0.7733333333333333,
+      "health": {
+        "score": 92.9,
+        "parts": {
+          "balance": 0.8576271186440678,
+          "decisive": 0.95,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.6610169491525425,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "entering stops the piece (new)",
+      "rules": {
+        "enterZone": "stop"
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.5166666666666667,
+        "drawRate": 0,
+        "avgTurns": 50.336666666666666,
+        "medianTurns": 45,
+        "capturesPerGame": 10.913333333333334,
+        "rescuesPerGame": 3.5033333333333334,
+        "rewardsPerGame": 1.9533333333333334,
+        "combatsPerGame": 14.513333333333334,
+        "upsetRate": 0.1302250803858521,
+        "cardDecidedRate": 0.25057418465778597,
+        "attackerWinRate": 0.7519522278364722,
+        "comebackRate": 0.6833333333333333,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 8.89,
+        "throneWinShare": 0.056666666666666664,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "mustersPerGame": 11.116666666666667,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 600
+        }
+      },
+      "skillEdge": 0.73,
+      "health": {
+        "score": 86.9,
+        "parts": {
+          "balance": 0.9333333333333331,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.9333333333333332,
+          "comebacks": 0,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "enter freely (attack or pass through)",
+      "rules": {
+        "enterZone": "free"
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.5833333333333334,
+        "drawRate": 0,
+        "avgTurns": 53.19,
+        "medianTurns": 46,
+        "capturesPerGame": 12.013333333333334,
+        "rescuesPerGame": 3.8666666666666667,
+        "rewardsPerGame": 2.0766666666666667,
+        "combatsPerGame": 15.936666666666667,
+        "upsetRate": 0.13616398243045388,
+        "cardDecidedRate": 0.2574775151641916,
+        "attackerWinRate": 0.753817193055846,
+        "comebackRate": 0.6666666666666666,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.006666666666666,
+        "throneWinShare": 0.043333333333333335,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "mustersPerGame": 11.656666666666666,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 600
+        }
+      },
+      "skillEdge": 0.74,
+      "health": {
+        "score": 82.1,
+        "parts": {
+          "balance": 0.6666666666666665,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.9666666666666667,
+          "comebacks": 0,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    }
+  ]
+}

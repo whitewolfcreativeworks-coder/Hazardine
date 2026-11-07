@@ -82,3 +82,12 @@ export function MUSTER(): Record<string, Partial<RuleConfig>> {
     'muster once each, full armies': { muster: 'firstEntry', startingArmy: 'full' },
   };
 }
+
+/** Turn order around the battle zone (musters always resolve at the end of the turn). */
+export function ORDER(): Record<string, Partial<RuleConfig>> {
+  return {
+    'entering stops the piece (new)': { enterZone: 'stop' },
+    'enter freely (attack or pass through)': { enterZone: 'free' },
+    'no muster, entering stops': { enterZone: 'stop', muster: 'off' },
+  };
+}

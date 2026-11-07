@@ -100,6 +100,7 @@ function renderBoard() {
     if (rowOf(i) === 15) cell.classList.add('zone-end');
     if (focus.territory != null && terr !== focus.territory) cell.classList.add('dimmed');
     if (spot.has(i)) cell.classList.add('spot');
+    if (s.arrived.includes(i)) cell.classList.add('arrived');
     if (tgt.has(i)) cell.classList.add('target');
     if (atk.has(i)) cell.classList.add('target-attack');
     for (const [r, q] of rooms) {
@@ -166,6 +167,7 @@ function renderPanels() {
     dice.append(die(v, i < 0));
   }
 
+  $('deck').textContent = `Deck ${s.deck.length}, discard ${s.discard.length}`;
   const mid = $('p-mid');
   const lc = s.lastCombat;
   const lt = s.lastTrial;

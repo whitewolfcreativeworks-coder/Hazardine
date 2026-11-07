@@ -83,6 +83,18 @@ All four are balanced. The +1 skill edge looked low, so it was rechecked with 60
 - The pawn reward is still needed; removing it made games luckier.
 - The health score ranks muster below the core game because its comeback band was set at 12-40%. That band was my guess at "enough but not too many", not a measure of fun; the creator prefers the livelier game. **Adopted: each piece once, 6 = rook.**
 
+## Turn order around the battle zone (600 games each, 300 skill games)
+
+[Table](results/sweep-roundorder.md). Creator's rules: musters resolve at the end of the turn, and only the first forward step from your homeland into the zone breaks the seal. Tested whether a piece entering the zone should stop there.
+
+| Variant | First-player wins | Captures/game | Musters/game | Skill edge |
+|---|---|---|---|---|
+| **Entering stops the piece** | **52%** | 10.9 | 11.1 | 73% |
+| Enter freely (attack in, pass through) | 58% | 12.0 | 11.7 | 74% |
+| No muster, entering stops | 54% | 7.5 | 0 | 77% |
+
+**Adopted: entering stops the piece.** Free entry let the first player strike before the other side could answer.
+
 ## Quest mode ("two dungeons") (400 games each, 200 skill games)
 
 [Table](results/sweep-roundquests.md). Each side clears three mirrored rooms with card trials (see RULES.md).

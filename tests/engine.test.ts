@@ -81,7 +81,7 @@ describe('movement and dice', () => {
   });
 
   it('allows unlimited range when configured', () => {
-    const s = blank({ rangeMode: 'unlimited' });
+    const s = blank({ rangeMode: 'unlimited', enterZone: 'free' });
     s.board[sq(4, 0)] = encode(0, 'R');
     expect(pieceTargets(s, sq(4, 0), 1)).toContain(sq(23, 0));
   });
@@ -429,20 +429,33 @@ describe('battle zone', () => {
 });
 
 describe('muster', () => {
-  it('a piece entering the battle zone unlocks a new piece on the back row', () => {
+  it('a piece entering the battle zone earns a muster, rolled at the end of the turn', () => {
     const s = blank({ muster: 'firstEntry' }, [2, 3]);
     s.board[sq(0, 4)] = encode(0, 'K');
     s.board[sq(23, 4)] = encode(1, 'K');
     s.board[sq(6, 2)] = encode(0, 'R');
     applyAction(s, legalActions(s).find((a) => a.t === 'move' && a.from === sq(6, 2) && a.to === sq(8, 2))!);
-    expect(s.pendingMuster).not.toBeNull();
-    const opts = legalActions(s);
-    expect(opts.every((a) => a.t === 'muster' || a.t === 'skipMuster')).toBe(true);
-    expect(opts.filter((a) => a.t === 'muster').every((a) => a.t === 'muster' && Math.floor(a.to / 8) === 0)).toBe(true);
-    applyAction(s, opts.find((a) => a.t === 'muster')!);
     expect(s.pendingMuster).toBeNull();
-    expect(s.stats.musters[0]).toBe(1);
-    expect(s.toMove).toBe(0); // one die is still left
+    expect(s.musterQueue).toBe(1);
+    applyAction(s, { t: 'end' });
+    if (s.pendingMuster) {
+      const opts = legalActions(s);
+      expect(opts.every((a) => a.t === 'muster' || a.t === 'skipMuster')).toBe(true);
+      expect(opts.filter((a) => a.t === 'muster').every((a) => a.t === 'muster' && Math.floor(a.to / 8) === 0)).toBe(true);
+      expect(s.toMove).toBe(0);
+      applyAction(s, opts.find((a) => a.t === 'muster')!);
+      expect(s.stats.musters[0]).toBe(1);
+    }
+    expect(s.toMove).toBe(1);
+  });
+
+  it('only a forward entry from your own homeland breaks the seal', () => {
+    const s = blank({ muster: 'firstEntry' }, [1, 1]);
+    s.board[sq(0, 4)] = encode(0, 'K');
+    s.board[sq(23, 4)] = encode(1, 'K');
+    s.board[sq(16, 2)] = encode(0, 'R'); // in enemy land, stepping back into the zone
+    applyAction(s, legalActions(s).find((a) => a.t === 'move' && a.from === sq(16, 2) && a.to === sq(15, 2))!);
+    expect(s.musterQueue).toBe(0);
   });
 
   it('each piece unlocks only once in firstEntry mode', () => {
@@ -463,5 +476,30 @@ describe('muster', () => {
     expect(s.toMove).toBe(0);
     applyAction(s, { t: 'skipMuster' });
     expect(s.toMove).toBe(1);
+  });
+});
+
+describe('entering the battle zone', () => {
+  it('stops the piece: no attacking into the zone and no passing through it', () => {
+    const s = blank({ enterZone: 'stop', combineDice: true }, [6, 6]);
+    s.board[sq(0, 4)] = encode(0, 'K');
+    s.board[sq(23, 4)] = encode(1, 'K');
+    s.board[sq(6, 0)] = encode(0, 'R');
+    s.board[sq(9, 0)] = encode(1, 'P');
+    s.board[sq(7, 5)] = encode(0, 'R');
+    const t1 = pieceTargets(s, sq(6, 0), 6);
+    expect(t1).not.toContain(sq(9, 0)); // can't attack into the zone
+    const t2 = pieceTargets(s, sq(7, 5), 12);
+    expect(t2).toContain(sq(15, 5));
+    expect(t2).not.toContain(sq(16, 5)); // can't pass through
+  });
+
+  it('a piece that just entered cannot act again this turn', () => {
+    const s = blank({ enterZone: 'stop' }, [2, 3]);
+    s.board[sq(0, 4)] = encode(0, 'K');
+    s.board[sq(23, 4)] = encode(1, 'K');
+    s.board[sq(6, 2)] = encode(0, 'R');
+    applyAction(s, legalActions(s).find((a) => a.t === 'move' && a.from === sq(6, 2) && a.to === sq(8, 2))!);
+    expect(legalActions(s).some((a) => a.t === 'move' && a.from === sq(8, 2))).toBe(false);
   });
 });

@@ -260,6 +260,7 @@ function renderBoard() {
     }
     if (lastMove && (lastMove.to === s || lastMove.from === s)) cell.classList.add('last');
     if (pick.t === 'piece' && pick.from === s) cell.classList.add('selected');
+    if (game.arrived.includes(s)) cell.classList.add('arrived');
     const p = decode(game.board[s]);
     let label = squareName(s);
     if (game.barricade[s] !== -1) {
@@ -327,6 +328,7 @@ function renderTray() {
       dice.append(die(v, i < 0));
     }
   }
+  $('deck').textContent = game.rules.combat === 'cards' ? `Deck ${game.deck.length} cards, discard ${game.discard.length}` + (game.discard.length ? `, top ${cardLabel(game.discard[game.discard.length - 1])}` : '') : '';
   $('status').textContent = over
     ? game.draw
       ? 'The turn limit was reached.'
@@ -482,7 +484,8 @@ function statusHint(): string {
   if (pick.t === 'rescue') return `Tap a home square to return your ${KIND_NAME[pick.kind].toLowerCase()}.`;
   if (pick.t === 'deploy') return `Tap a home square to deploy your ${KIND_NAME[pick.kind].toLowerCase()}.`;
   if (pick.t === 'muster') return `Tap a square on your back row to place the ${KIND_NAME[pick.kind].toLowerCase()}.`;
-  if (game.pendingMuster) return 'Muster: choose which piece to bring out.';
+  if (game.pendingMuster) return 'End of turn muster: choose which piece to bring out.';
+  if (pick.t === 'piece' && game.arrived.includes(pick.from)) return 'This piece just entered the battle zone. It can act again next turn.';
   if (pick.t === 'piece') {
     const n = actionsForPick().size;
     return n ? 'Tap a highlighted square. Rings mark attacks.' : 'That piece has no moves with these dice.';
@@ -507,7 +510,9 @@ function rulesHtml(r: RuleConfig) {
       ? `<p><strong>Attacking.</strong> Moving onto an enemy starts a fight. Each side adds its unit strength (pawn ${r.strength.P}, knight and bishop ${r.strength.N}, rook ${r.strength.R}, queen ${r.strength.Q}, king ${r.strength.K}), +${r.supportBonus} for each friendly neighbour (up to ${r.supportCap}), and a card. ${r.handSize ? `Attackers choose a card from a hand of ${r.handSize}; defenders draw blind.` : 'Both sides draw blind.'} Defenders get +${r.homeDefense} at home${r.barricades ? ` and +${r.fortBonus} beside their own barricade` : ''}. Higher total wins; ties go to the defender. A beaten attacker ${r.attackerLoss === 'repelled' ? 'stays where it was' : 'is captured'}.</p>`
       : '<p><strong>Attacking.</strong> Moving onto an enemy captures it, as in chess.</p>'
   }
-  ${r.muster !== 'off' ? `<p><strong>Muster.</strong> When one of your pieces enters the battle zone${r.muster === 'firstEntry' ? ' for the first time' : r.muster === 'oncePerTurn' ? ' (once per turn)' : ''}, roll two dice and choose one. ${[1, 2, 3, 4, 5, 6].map((d) => `${d} = ${KIND_NAME[r.musterMap[d - 1]].toLowerCase()}`).join(', ')}. Place that piece free on your back row, if your supply still has one.</p>` : ''}
+  ${r.enterZone === 'stop' ? `<p><strong>Entering the battle zone.</strong> A piece moving into the battle zone must stop on an empty square. It can't attack into the zone, pass straight through it, or act again that turn. It fights from your next turn.</p>` : ''}
+  ${r.muster !== 'off' ? `<p><strong>Muster.</strong> The first time each of your pieces moves forward from your homeland into the battle zone, it breaks the seal and earns a muster (kings too). At the end of your turn, roll two dice for each muster and choose one: ${[1, 2, 3, 4, 5, 6].map((d) => `${d} = ${KIND_NAME[r.musterMap[d - 1]].toLowerCase()}`).join(', ')}. Place that piece free on your back row. If a die's piece has run out of your supply, that die doesn't count. Each piece breaks the seal only once.</p>` : ''}
+  ${r.combat === 'cards' ? `<p><strong>Cards at the table.</strong> One shared deck sits face down, with a face-up discard pile beside it. To attack, lay your chosen card face down; the defender turns over the top card of the deck; then reveal. Both cards go on the discard pile and the attacker draws back up to ${r.handSize}. When the deck runs out, shuffle the discard pile into a new deck.</p>` : ''}
   ${r.captureMode === 'jail' ? `<p><strong>Jail.</strong> Captured pieces go to jail. Spend a die of ${r.rescueMinDie} or more to bring one back to your home rows.</p>` : ''}
   ${r.promotionMode !== 'none' ? `<p><strong>Crossing.</strong> A pawn that reaches ${r.promotionZone === 'enemyHome' ? 'the enemy homeland' : 'the far edge'} ${r.promotionMode === 'reinforce' ? 'earns a new piece. Spend any die to deploy it on your home rows.' : r.promotionMode === 'promote' ? 'becomes a stronger piece.' : 'either becomes a stronger piece or earns one at home.'}</p>` : ''}
   ${r.barricades ? `<p><strong>Barricades.</strong> Spend a die to place one of your ${r.barricades} checkers (Ivory red, Ebony black) next to your pieces (not in enemy land). They block movement. An adjacent enemy can knock one down with a ${r.demolishMinDie} or higher.</p>` : ''}

@@ -40,7 +40,7 @@ Ivory moves first, but rolls only **one die** on the opening turn (this offsets 
 - Each side's strength: pawn 2, knight 4, bishop 4, rook 6, queen 9, king 5.
 - **Battle ground:** Ivory's color is red and Ebony's is black, matching their checkers. In the battle zone, a piece fighting from a square of its own color adds +2, attacking or defending.
 - The defender adds +1 in its own homeland and +2 if it stands next to one of its own barricades.
-- The attacker plays a card from its hand (then draws a replacement); the defender draws one blind from the deck.
+- **Cards at the table.** One shared deck sits face down beside the battle zone, with a face-up discard pile next to it. The attacker lays its chosen card from its hand face down; the defender turns over the top card of the deck; then the attacker reveals. Both cards go on the discard pile and the attacker draws back up to three. When the deck runs out, shuffle the discard pile into a new deck. (No shuffling between draws is needed. A face-up discard lets players track which high cards are gone; turn it face down if you'd rather not.)
 - Card values: 2-4 = +1, 5-7 = +2, 8-10 = +3, J-Q = +4, K-A = +5.
 - Higher total wins. **Ties go to the defender.** A beaten attacker stays where it was. A beaten defender goes to jail and the attacker takes its square.
 
@@ -48,7 +48,9 @@ Ivory moves first, but rolls only **one die** on the opening turn (this offsets 
 
 **Barricade.** Ivory's checkers are red, Ebony's are black. Spend any die to place one of your checkers on an empty square next to one of your pieces, in your homeland or the middle. Barricades block movement for both sides. An enemy piece next to a barricade can knock it down with a die of 4 or more.
 
-**Muster.** The first time each of your pieces enters the battle zone, it calls up a new piece. Roll two dice and choose one: 1-2 = pawn, 3 = knight, 4 = bishop, 5-6 = rook. Place that piece free on any empty square of your back row. You can only take a piece still in your supply; if a die's piece has run out, that die doesn't count. If neither die gives an available piece, or your back row is full, the muster is lost. Mustering costs no action. Each piece gets **one** muster roll ever, even if it leaves the battle zone and comes back, and even if that roll was lost. Pieces that join later (mustered, deployed or rescued from jail) get their own single roll. Queens never come from a muster.
+**Entering the battle zone.** A piece that moves into the battle zone must stop on an empty square there. It can't attack into the zone, pass straight through it, or act again that turn. It fights from your next turn.
+
+**Muster.** The first time each of your pieces (the king included) moves forward from your homeland into the battle zone, it breaks the seal and earns a muster. Finish your other actions. At the end of your turn, roll two dice for each muster earned and choose one: 1-2 = pawn, 3 = knight, 4 = bishop, 5-6 = rook. Place that piece free on any empty square of your back row. You can only take a piece still in your supply; if a die's piece has run out, that die doesn't count. If neither die gives an available piece, or your back row is full, that muster is lost. Re-entering the zone later never earns another. Queens never come from a muster.
 
 **Deploy.** Spend any die to place an earned reinforcement on an empty square in your back two rows.
 
@@ -84,6 +86,7 @@ If 300 player-turns pass without a winner, the game is a draw (this has not happ
 | Reward zone | enemy homeland, far back row | enemy homeland | Back row makes rewards rare |
 | Barricades | 0, 4 | 4 | Small effect; gives checkers a job |
 | Victory | king, king or throne | king or throne | Second path adds tension at little cost |
+| Entering the zone | free, stop | stop | Attacking into the zone or passing through it gave the first player 58% wins; stopping keeps it at 52% |
 | Muster | off, each piece once, every entry, once per turn; 6 = queen or rook | each piece once, 6 = rook | Constant fresh pieces and more comebacks; queens from a die roll made skill matter much less |
 | Battle zone | nothing special, own-color ground +1 or +2, attacker charge card | own-color ground +2 | Gives the middle and the checker colors a meaning; balance and skill unchanged |
 

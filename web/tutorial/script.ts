@@ -20,6 +20,9 @@ import {
 } from '../../src/engine';
 
 export const LINES: Record<string, string> = {
+  table1: 'To play at a table, lay two chessboards and a checkerboard end to end, with the checkerboard in the middle.',
+  table2: "Each player keeps the rest of their two chess sets beside their own homeland. That's your supply. Ivory takes the four red checkers, and Ebony the four black.",
+  table3: 'Shuffle the deck and deal three cards to each player. Put the deck face down beside the battle zone, with room for a face up discard pile. Captured pieces wait beside the board, as prisoners.',
   intro1: "Welcome to Hazardine. In the next few minutes I'll teach you the whole game, on a real board.",
   board1: "The battlefield is three boards laid end to end. On the left is Ivory's homeland, a chessboard.",
   board2: 'In the middle is the battle zone, a red and black checkerboard. Most of the fighting happens here.',
@@ -36,11 +39,14 @@ export const LINES: Record<string, string> = {
   move3: 'With a six, it reaches twice as far. On a board twenty four squares long, that limit matters.',
   move4: 'Knights and kings move as in chess, whatever the die shows.',
   move5: 'Pawns step forward up to half the die, rounded up, and attack one square diagonally forward.',
-  move6: 'Here, Ivory spends a five to push the rook into the middle.',
+  move6: 'Here, Ivory spends a five to march the rook into the battle zone.',
 
+  move7: "Entering the battle zone ends that piece's move. It can't attack on the turn it arrives, and it can't pass straight through. Next turn, it's ready to fight.",
+  fight0: 'A turn later, the armies meet in the battle zone.',
+  fightcards: 'Both cards go face up on the discard pile, and the attacker draws back up to three. When the deck runs out, shuffle the discard pile to form a new deck.',
   fight1: "Moving onto an enemy piece starts a fight. Nothing is captured automatically.",
   fight2: 'Each side starts with its strength. Pawn two. Knight and bishop four. Rook six. Queen nine. King five.',
-  fight3: 'The attacker chooses a card from a hand of three. The defender draws one blind from the deck.',
+  fight3: 'Each player holds three cards. To attack, choose one and lay it face down. The defender turns over the top card of the deck, then you reveal yours.',
   fight4: 'Cards add one to five. Low cards add one. Kings and aces add five.',
   fight5: "Watch. Ivory's rook attacks Ebony's knight, playing a king.",
   fight6: 'Six plus five makes eleven, against four plus two. The knight is captured.',
@@ -51,10 +57,10 @@ export const LINES: Record<string, string> = {
   zone2: 'In the battle zone, a piece fighting from a square of its own color gets two extra points, attacking or defending. Pick your ground before you strike.',
   zone3: "Ivory's rook stands on red, so it attacks at eight. Ebony's bishop stands on black, so it defends at six. The cards add the rest, and the rook wins.",
 
-  muster1: "Here's what keeps the battle fresh. The first time each of your pieces enters the battle zone, it calls up a new piece. This is called a muster.",
-  muster2: 'Roll two dice and choose one. One or two is a pawn. Three, a knight. Four, a bishop. Five or six, a rook.',
-  muster3: 'Ivory rolls a two and a five, and takes the rook. New pieces always start on your very back row.',
-  muster4: "You can only call up pieces still in your supply. If a die's piece has run out, that die doesn't count. Queens never come from a muster; only a pawn that crosses the whole field can earn one.",
+  muster1: 'The first time each of your pieces moves forward out of your homeland into the battle zone, it breaks the seal and earns a muster. Even the king can do it, if you dare.',
+  muster2: 'Finish your other actions first. Then, at the end of your turn, roll two dice for each muster you earned, and choose one. One or two is a pawn. Three, a knight. Four, a bishop. Five or six, a rook.',
+  muster3: 'Ivory rolls a two and a five, and takes a rook from the spare pieces beside the board. New pieces always start on your very back row. Then the turn passes.',
+  muster4: "You can only call up pieces you still have in your supply. If a die's piece has run out, that die doesn't count. Each piece breaks the seal only once, and queens never come from a muster.",
 
   jail1: "Captured pieces aren't gone. They go to jail.",
   jail2: 'Roll a six, and you can spend it to bring a prisoner home to your back two rows.',
@@ -205,6 +211,21 @@ export const CHAPTERS: Chapter[] = [
     },
   },
   {
+    id: 'table',
+    title: 'Setting up the table',
+    async run(st) {
+      const s = opening();
+      s.dice = [];
+      s.rolled = [];
+      st.show(s);
+      await st.say('table1');
+      await st.say('table2');
+      st.note('Deck face down    Discard face up');
+      await st.say('table3');
+      st.note(null);
+    },
+  },
+  {
     id: 'turn',
     title: 'Armies and your turn',
     async run(st) {
@@ -250,9 +271,38 @@ export const CHAPTERS: Chapter[] = [
       st.focus({ squares: [sq(5, 3)], targets: [sq(10, 3)] });
       await st.say('move6');
       await st.play(s, find(s, moveTo(sq(5, 3), sq(10, 3))));
-      s.pendingMuster = null; // musters are explained in their own chapter
+      st.focus({ squares: [sq(10, 3)] });
+      await st.say('move7');
+      st.focus({});
+    },
+  },
+  {
+    id: 'muster',
+    title: 'Calling up new pieces',
+    async run(st) {
+      const s = fresh([3, 4]);
+      put(s, 0, 'R', 6, 2);
+      put(s, 0, 'N', 0, 1);
+      put(s, 0, 'P', 1, 3);
+      put(s, 1, 'B', 13, 5);
+      put(s, 1, 'P', 21, 2);
       st.show(s);
-      await st.wait(600);
+      st.focus({ territory: 1, squares: [sq(6, 2)] });
+      await st.say('muster1');
+      await st.play(s, find(s, moveTo(sq(6, 2), sq(9, 2))));
+      st.focus({ squares: [sq(9, 2)] });
+      const say = st.say('muster2');
+      await st.wait(2600);
+      await st.play(s, find(s, moveTo(sq(0, 1), sq(2, 2))));
+      await say;
+      // The dice are spent, so the turn ends with the muster roll (fixed here so the narration matches). so the narration matches.
+      s.pendingMuster = { player: 0, rolls: [2, 5], options: ['P', 'R'] };
+      st.show(s);
+      const say3 = st.say('muster3');
+      await st.wait(3200);
+      await st.play(s, find(s, (a) => a.t === 'muster' && a.kind === 'R' && a.to === sq(0, 6)));
+      await say3;
+      await st.say('muster4');
     },
   },
   {
@@ -266,6 +316,7 @@ export const CHAPTERS: Chapter[] = [
       put(s, 1, 'P', 19, 6);
       s.hands[0] = [CARD.FOUR_D, CARD.KH, CARD.NINE_C];
       st.show(s);
+      await st.say('fight0');
       await st.say('fight1');
       st.note('Pawn 2  Knight 4  Bishop 4  Rook 6  Queen 9  King 5');
       await st.say('fight2');
@@ -278,6 +329,7 @@ export const CHAPTERS: Chapter[] = [
       await st.play(s, find(s, moveTo(sq(11, 3), sq(12, 3), (a) => a.card === 1)));
       st.focus({});
       await st.say('fight6');
+      await st.say('fightcards');
       await st.say('fight7');
 
       const t = fresh([1, 2]);
@@ -317,33 +369,6 @@ export const CHAPTERS: Chapter[] = [
       await st.wait(4200);
       await st.play(s, find(s, moveTo(sq(10, 1), sq(11, 1), (a) => a.card === 0)));
       await say;
-    },
-  },
-  {
-    id: 'muster',
-    title: 'Calling up new pieces',
-    async run(st) {
-      const s = fresh([3, 4]);
-      put(s, 0, 'R', 6, 2);
-      put(s, 0, 'N', 0, 1);
-      put(s, 0, 'P', 1, 3);
-      put(s, 1, 'B', 13, 5);
-      put(s, 1, 'P', 21, 2);
-      st.show(s);
-      st.focus({ territory: 1, squares: [sq(6, 2)] });
-      await st.say('muster1');
-      await st.play(s, find(s, moveTo(sq(6, 2), sq(9, 2))));
-      // Show a fixed muster roll so the narration matches.
-      s.pendingMuster = { player: 0, rolls: [2, 5], options: ['P', 'R'] };
-      st.show(s);
-      await st.say('muster2');
-      const say = st.say('muster3');
-      await st.wait(1600);
-      await st.play(s, find(s, (a) => a.t === 'muster' && a.kind === 'R' && a.to === sq(0, 6)));
-      st.focus({ squares: [sq(0, 6)] });
-      await say;
-      await st.say('muster4');
-      st.focus({});
     },
   },
   {
@@ -542,4 +567,4 @@ export const CHAPTERS: Chapter[] = [
 ];
 
 /** The closing demonstration game (seed and agents chosen for a lively, typical game). */
-export const LIVE_GAME = { seed: 10, ivory: 'heuristic:aggressive', ebony: 'heuristic:balanced' };
+export const LIVE_GAME = { seed: 9, ivory: 'heuristic:aggressive', ebony: 'heuristic:balanced' };

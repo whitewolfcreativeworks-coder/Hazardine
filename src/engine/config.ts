@@ -48,6 +48,12 @@ export interface RuleConfig {
    * 'firstEntry' = each piece unlocks once; 'everyEntry' = every entry; 'oncePerTurn' = first entry each turn.
    */
   muster: 'off' | 'firstEntry' | 'everyEntry' | 'oncePerTurn';
+  /**
+   * Entering the battle zone: 'free' = a piece may attack into it or pass through it;
+   * 'stop' = a piece moving forward into the zone must stop on an empty square, can't act
+   * again that turn, and fights from the next turn.
+   */
+  enterZone: 'free' | 'stop';
   musterMap: Kind[];
   /** Bonus to a defender standing in its own homeland. */
   homeDefense: number;
@@ -115,6 +121,7 @@ export const DEFAULT_RULES: RuleConfig = {
   battleZone: 'colorGround',
   battleBonus: 2,
   muster: 'firstEntry',
+  enterZone: 'stop',
   musterMap: ['P', 'P', 'N', 'B', 'R', 'R'],
   homeDefense: 1,
   captureMode: 'jail',

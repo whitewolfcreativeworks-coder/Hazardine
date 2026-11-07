@@ -151,6 +151,10 @@ export interface GameState {
   pendingMuster: { player: Player; rolls: number[]; options: Kind[] } | null;
   /** For 'oncePerTurn' musters. */
   musteredThisTurn: boolean;
+  /** Muster rolls earned this turn, resolved one by one when the turn ends. */
+  musterQueue: number;
+  /** Squares of pieces that entered the battle zone this turn (they can't act again this turn). */
+  arrived: number[];
   log: string[];
   logEnabled: boolean;
 }
@@ -280,6 +284,8 @@ export function createGame(seed: number, rulesIn?: Partial<RuleConfig> | RuleCon
     lastTrial: null,
     pendingMuster: null,
     musteredThisTurn: false,
+    musterQueue: 0,
+    arrived: [],
     log: [],
     logEnabled: !!opts.log,
   };
@@ -343,6 +349,7 @@ export function cloneState(s: GameState): GameState {
       questRooms: [...s.stats.questRooms],
     },
     questStage: [s.questStage[0], s.questStage[1]],
+    arrived: s.arrived.slice(),
     pendingMuster: s.pendingMuster ? { ...s.pendingMuster, rolls: s.pendingMuster.rolls.slice(), options: s.pendingMuster.options.slice() } : null,
     shields: [s.shields[0], s.shields[1]],
     questEase: [s.questEase[0], s.questEase[1]],
@@ -396,6 +403,8 @@ function startTurn(s: GameState) {
   s.dice = dice;
   s.rolled = dice.slice();
   s.musteredThisTurn = false;
+  s.musterQueue = 0;
+  s.arrived = [];
   const lead = material(s, s.toMove) - material(s, (1 - s.toMove) as Player);
   if (lead < s.stats.minLead[s.toMove]) s.stats.minLead[s.toMove] = lead;
   if (-lead < s.stats.minLead[1 - s.toMove]) s.stats.minLead[1 - s.toMove] = -lead;
@@ -496,6 +505,11 @@ export function pieceTargets(s: GameState, from: number, v: number): number[] {
       const occ = s.board[t];
       if (occ && ownerOf(occ) !== p) out.push(t);
     }
+  }
+  if (s.rules.enterZone === 'stop' && territoryOf(from) !== 1) {
+    // Entering the battle zone ends the move: stop on an empty square, no attacking into it or passing through.
+    const home = territoryOf(from);
+    return out.filter((t) => territoryOf(t) === home || (territoryOf(t) === 1 && !s.board[t]));
   }
   return out;
 }
@@ -606,9 +620,11 @@ export function legalActions(s: GameState): Action[] {
   const combos = comboOptions(s);
   const hand = s.hands[p];
 
+  const stop = r.enterZone === 'stop';
   for (let from = 0; from < SQUARES; from++) {
     const code = s.board[from];
     if (!code || ownerOf(code) !== p) continue;
+    if (stop && s.arrived.includes(from)) continue; // arrived in the battle zone this turn
     const k = kindOf(code);
     // Long-move combos only matter for sliders and die-ranged pawns.
     const useCombos = (k === 'Q' || k === 'R' || k === 'B') && r.rangeMode === 'die' ? combos : k === 'P' && r.pawnMode === 'half' ? combos : [];
@@ -788,7 +804,8 @@ export function applyAction(s: GameState, a: Action, opts: { forceTrial?: boolea
   s.lastTrial = null;
   if (a.t === 'end') {
     if (s.dice.length === s.rolled.length) s.stats.skippedTurns[p] += legalActions(s).length === 1 ? 1 : 0;
-    endTurn(s);
+    s.dice = [];
+    finishTurn(s);
     return;
   }
   if (a.t === 'muster' || a.t === 'skipMuster') {
@@ -799,7 +816,7 @@ export function applyAction(s: GameState, a: Action, opts: { forceTrial?: boolea
       log(s, `Mustered a ${a.kind} on ${squareName(a.to)}`);
     }
     s.pendingMuster = null;
-    if (s.dice.length === 0) endTurn(s);
+    finishTurn(s);
     return;
   }
   s.stats.actions[p]++;
@@ -853,7 +870,10 @@ export function applyAction(s: GameState, a: Action, opts: { forceTrial?: boolea
           runTrial(s, a.to, opts.forceTrial);
           if (s.winner !== null) return;
         }
-        if (s.rules.muster !== 'off' && territoryOf(a.to) === 1 && territoryOf(a.from) !== 1) maybeMuster(s, a.to, code);
+        if (territoryOf(a.to) === 1 && territoryOf(a.from) !== 1) {
+          if (s.rules.enterZone === 'stop') s.arrived.push(a.to);
+          if (s.rules.muster !== 'off') maybeMuster(s, a.to, code, a.from);
+        }
       }
       break;
     }
@@ -884,21 +904,38 @@ export function applyAction(s: GameState, a: Action, opts: { forceTrial?: boolea
       break;
     }
   }
-  if (s.dice.length === 0 && !s.pendingMuster) endTurn(s);
+  if (s.dice.length === 0) finishTurn(s);
+}
+
+/** End of a turn: resolve each earned muster roll in order, then pass the turn. */
+function finishTurn(s: GameState) {
+  while (!s.pendingMuster && s.musterQueue > 0) {
+    s.musterQueue--;
+    rollMuster(s);
+  }
+  if (!s.pendingMuster) endTurn(s);
 }
 
 /** A piece just entered the battle zone: check whether it unlocks a muster, and roll for it. */
-function maybeMuster(s: GameState, square: number, codeBefore: number) {
+function maybeMuster(s: GameState, square: number, codeBefore: number, from: number) {
   const p = s.toMove;
   const mode = s.rules.muster;
   if (mode === 'firstEntry') {
-    if (isMarched(codeBefore)) return;
+    // Only the first forward step out of your own homeland breaks the seal.
+    if (isMarched(codeBefore) || territoryOf(from) !== homeTerritory(p)) return;
     const c = s.board[square];
     if (c) s.board[square] = encode(ownerOf(c), kindOf(c), isVet(c), true);
   } else if (mode === 'oncePerTurn') {
     if (s.musteredThisTurn) return;
     s.musteredThisTurn = true;
   }
+  s.musterQueue++;
+  log(s, 'Muster earned (rolled at the end of the turn)');
+}
+
+/** Roll two dice for a muster; the player picks one of the two pieces (if available). */
+function rollMuster(s: GameState) {
+  const p = s.toMove;
   const rolls = [rollDie(s), rollDie(s)];
   const options = [...new Set(rolls.map((d) => s.rules.musterMap[d - 1]))].filter((k) => s.reserve[p][k] > 0);
   const row = backRow(p);
