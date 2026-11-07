@@ -32,8 +32,8 @@ const PRESETS: Record<string, Partial<RuleConfig>> = {
   default: {},
   full: { startingArmy: 'full' },
   classic: { combat: 'none' },
-  quest: { quest: 'win' },
-  questBoons: { quest: 'boons' },
+  quest: { quest: 'win', firstTurnOneDie: false },
+  questBoons: { quest: 'boons', firstTurnOneDie: false },
 };
 
 type Mode = 'hvc' | 'hvh' | 'cvc';
@@ -436,7 +436,7 @@ function rulesHtml(r: RuleConfig) {
   return `
   <p><strong>Goal.</strong> Capture the enemy king${r.victory === 'kingOrThrone' ? ', or move any piece onto the square where the enemy king started (the throne)' : ''}.</p>
   <p><strong>The field.</strong> Three boards end to end: your homeland, the contested red-and-black middle, and the enemy homeland.</p>
-  <p><strong>Your turn.</strong> Roll two dice. Each die is one action.${r.doubles === 'three' ? ' Doubles give you three actions.' : r.doubles === 'four' ? ' Doubles give you four actions.' : ''}${r.combineDice ? ' You can also spend both dice on one long move.' : ''} End your turn whenever you like.</p>
+  <p><strong>Your turn.</strong> Roll two dice. Each die is one action.${r.firstTurnOneDie ? ' Ivory rolls only one die on the very first turn.' : ''}${r.doubles === 'three' ? ' Doubles give you three actions.' : r.doubles === 'four' ? ' Doubles give you four actions.' : ''}${r.combineDice ? ' You can also spend both dice on one long move.' : ''} End your turn whenever you like.</p>
   <p><strong>Moving.</strong> ${range} Knights and kings move as in chess with any die. ${pawn}</p>
   ${
     r.combat === 'cards'

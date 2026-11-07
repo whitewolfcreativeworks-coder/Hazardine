@@ -90,4 +90,5 @@ Each side runs its own three-room dungeon on the battlefield, tracked with penci
 - **Trial.** When one of your pieces other than the king ends a move on your next room, draw a card from the deck. Strength + card value must reach 7, 9 and 11 for the three rooms.
 - **Pass.** Mark the room. Ford: take a rook, bishop or knight from reserve to deploy at home. Crypt: gain a shield (spend it to turn a lost defence into a repelled attack). Vault: the quest is complete.
 - **Fail.** The piece goes to jail; the room stays open.
+- **Opening.** In quest mode, both players roll two dice from the first turn (the one-die opening over-corrects when the quest is a race).
 - **Variants.** *Quest wins*: completing the Vault wins the game. *Boons only*: the Vault grants a queen and frees one prisoner instead. *Linked*: each room your rival clears makes your next trial 1 easier.

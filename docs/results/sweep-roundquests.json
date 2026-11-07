@@ -1,0 +1,332 @@
+{
+  "games": 400,
+  "skill": 200,
+  "baseRules": {},
+  "rows": [
+    {
+      "name": "quests off (core game)",
+      "rules": {},
+      "summary": {
+        "games": 400,
+        "firstPlayerWinRate": 0.5025125628140703,
+        "drawRate": 0.005,
+        "avgTurns": 46.135,
+        "medianTurns": 38,
+        "capturesPerGame": 7.66,
+        "rescuesPerGame": 3.015,
+        "rewardsPerGame": 2.705,
+        "combatsPerGame": 9.9,
+        "upsetRate": 0.09646464646464646,
+        "cardDecidedRate": 0.2595959595959596,
+        "attackerWinRate": 0.7737373737373737,
+        "comebackRate": 0.4371859296482412,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.33,
+        "throneWinShare": 0.15577889447236182,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 398
+        }
+      },
+      "skillEdge": 0.795,
+      "health": {
+        "score": 97,
+        "parts": {
+          "balance": 0.9899497487437188,
+          "decisive": 0.985,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.7520938023450587,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "quest: boons only",
+      "rules": {
+        "quest": "boons"
+      },
+      "summary": {
+        "games": 400,
+        "firstPlayerWinRate": 0.495,
+        "drawRate": 0,
+        "avgTurns": 46.105,
+        "medianTurns": 41,
+        "capturesPerGame": 7.28,
+        "rescuesPerGame": 2.915,
+        "rewardsPerGame": 2.495,
+        "combatsPerGame": 10.28,
+        "upsetRate": 0.1240272373540856,
+        "cardDecidedRate": 0.25729571984435795,
+        "attackerWinRate": 0.708171206225681,
+        "comebackRate": 0.48,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.185,
+        "throneWinShare": 0.09,
+        "questWinShare": 0,
+        "questRoomsPerGame": 2.825,
+        "trialsPerGame": 3.085,
+        "trialFailRate": 0.08427876823338736,
+        "winsBySpec": {
+          "heuristic:balanced": 400
+        }
+      },
+      "skillEdge": 0.69,
+      "health": {
+        "score": 89.9,
+        "parts": {
+          "balance": 0.98,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.7999999999999998,
+          "comebacks": 0.4666666666666669,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "quest: boons, linked +1",
+      "rules": {
+        "quest": "boons",
+        "questLink": 1
+      },
+      "summary": {
+        "games": 400,
+        "firstPlayerWinRate": 0.515,
+        "drawRate": 0,
+        "avgTurns": 46.235,
+        "medianTurns": 41,
+        "capturesPerGame": 7.345,
+        "rescuesPerGame": 2.92,
+        "rewardsPerGame": 2.47,
+        "combatsPerGame": 10.475,
+        "upsetRate": 0.13556085918854416,
+        "cardDecidedRate": 0.26587112171837707,
+        "attackerWinRate": 0.7011933174224344,
+        "comebackRate": 0.47,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.21,
+        "throneWinShare": 0.09,
+        "questWinShare": 0,
+        "questRoomsPerGame": 2.965,
+        "trialsPerGame": 3.275,
+        "trialFailRate": 0.09465648854961832,
+        "winsBySpec": {
+          "heuristic:balanced": 400
+        }
+      },
+      "skillEdge": 0.685,
+      "health": {
+        "score": 89.4,
+        "parts": {
+          "balance": 0.94,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.7833333333333334,
+          "comebacks": 0.5333333333333337,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "quest: wins, linked +1",
+      "rules": {
+        "quest": "win",
+        "questLink": 1
+      },
+      "summary": {
+        "games": 400,
+        "firstPlayerWinRate": 0.44,
+        "drawRate": 0,
+        "avgTurns": 44.75,
+        "medianTurns": 40,
+        "capturesPerGame": 5.555,
+        "rescuesPerGame": 2.84,
+        "rewardsPerGame": 2.3,
+        "combatsPerGame": 7.795,
+        "upsetRate": 0.13662604233483003,
+        "cardDecidedRate": 0.2918537524053881,
+        "attackerWinRate": 0.7126363053239256,
+        "comebackRate": 0.455,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.225,
+        "throneWinShare": 0.025,
+        "questWinShare": 0.605,
+        "questRoomsPerGame": 3.035,
+        "trialsPerGame": 3.765,
+        "trialFailRate": 0.19389110225763612,
+        "winsBySpec": {
+          "heuristic:balanced": 400
+        }
+      },
+      "skillEdge": 0.675,
+      "health": {
+        "score": 86.1,
+        "parts": {
+          "balance": 0.76,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.7500000000000001,
+          "comebacks": 0.6333333333333333,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "quest: completing it wins",
+      "rules": {
+        "quest": "win"
+      },
+      "summary": {
+        "games": 400,
+        "firstPlayerWinRate": 0.41,
+        "drawRate": 0,
+        "avgTurns": 45.29,
+        "medianTurns": 40,
+        "capturesPerGame": 5.615,
+        "rescuesPerGame": 2.95,
+        "rewardsPerGame": 2.31,
+        "combatsPerGame": 7.835,
+        "upsetRate": 0.1372048500319081,
+        "cardDecidedRate": 0.29036375239310785,
+        "attackerWinRate": 0.7166560306317805,
+        "comebackRate": 0.46,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.325,
+        "throneWinShare": 0.02,
+        "questWinShare": 0.59,
+        "questRoomsPerGame": 2.97,
+        "trialsPerGame": 3.765,
+        "trialFailRate": 0.21115537848605578,
+        "winsBySpec": {
+          "heuristic:balanced": 400
+        }
+      },
+      "skillEdge": 0.68,
+      "health": {
+        "score": 83.6,
+        "parts": {
+          "balance": 0.6399999999999999,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.7666666666666668,
+          "comebacks": 0.6,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "quest: wins, harder rooms (8/10/12)",
+      "rules": {
+        "quest": "win",
+        "questDifficulty": [
+          8,
+          10,
+          12
+        ]
+      },
+      "summary": {
+        "games": 400,
+        "firstPlayerWinRate": 0.475,
+        "drawRate": 0,
+        "avgTurns": 46.335,
+        "medianTurns": 41,
+        "capturesPerGame": 5.895,
+        "rescuesPerGame": 3.01,
+        "rewardsPerGame": 2.495,
+        "combatsPerGame": 8.275,
+        "upsetRate": 0.1256797583081571,
+        "cardDecidedRate": 0.2676737160120846,
+        "attackerWinRate": 0.7123867069486405,
+        "comebackRate": 0.515,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.385,
+        "throneWinShare": 0.05,
+        "questWinShare": 0.48,
+        "questRoomsPerGame": 2.765,
+        "trialsPerGame": 3.455,
+        "trialFailRate": 0.19971056439942114,
+        "winsBySpec": {
+          "heuristic:balanced": 400
+        }
+      },
+      "skillEdge": 0.605,
+      "health": {
+        "score": 80,
+        "parts": {
+          "balance": 0.8999999999999999,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.5166666666666666,
+          "comebacks": 0.2333333333333334,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "quest: wins, easier rooms (6/8/10)",
+      "rules": {
+        "quest": "win",
+        "questDifficulty": [
+          6,
+          8,
+          10
+        ]
+      },
+      "summary": {
+        "games": 400,
+        "firstPlayerWinRate": 0.585,
+        "drawRate": 0,
+        "avgTurns": 40.245,
+        "medianTurns": 38,
+        "capturesPerGame": 4.255,
+        "rescuesPerGame": 3.24,
+        "rewardsPerGame": 2.455,
+        "combatsPerGame": 6.13,
+        "upsetRate": 0.10522022838499184,
+        "cardDecidedRate": 0.2495921696574225,
+        "attackerWinRate": 0.6941272430668842,
+        "comebackRate": 0.53,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 8.18,
+        "throneWinShare": 0.04,
+        "questWinShare": 0.755,
+        "questRoomsPerGame": 3.565,
+        "trialsPerGame": 5.57,
+        "trialFailRate": 0.3599640933572711,
+        "winsBySpec": {
+          "heuristic:balanced": 400
+        }
+      },
+      "skillEdge": 0.63,
+      "health": {
+        "score": 75.7,
+        "parts": {
+          "balance": 0.6600000000000001,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.6,
+          "comebacks": 0.1333333333333333,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    }
+  ]
+}
