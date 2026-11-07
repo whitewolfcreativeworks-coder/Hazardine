@@ -297,3 +297,6 @@ dialog a { color: #6b4a12; font-weight: 700; }
 .ground-note { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
 .card.charge { outline: 2px dashed var(--brass); }
 @media (prefers-reduced-motion: reduce) { .sq.clash { animation: none; } }
+/* Ebony pieces need a light edge to read on the black battle-zone squares. */
+.sq .glyph.side-1, .flyer.side-1 { -webkit-text-stroke: 1.2px #d9c9a3; paint-order: stroke fill; }
+.sq .glyph.side-0, .flyer.side-0 { -webkit-text-stroke: 1px #1b1410; paint-order: stroke fill; }
