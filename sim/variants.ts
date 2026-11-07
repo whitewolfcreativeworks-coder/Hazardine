@@ -34,3 +34,15 @@ export function VARIANTS(_base: Partial<RuleConfig>): Record<string, Partial<Rul
     'victory: king only': { victory: 'king' },
   };
 }
+
+/** Round 3: full candidate rulesets built from the round 1-2 winners, compared head to head with larger samples. */
+export function CANDIDATES(): Record<string, Partial<RuleConfig>> {
+  const core: Partial<RuleConfig> = { rescueMinDie: 6, supportBonus: 0 };
+  return {
+    'A: combined dice': { ...core, combineDice: true },
+    'B: A + full armies': { ...core, combineDice: true, startingArmy: 'full' },
+    'C: A + failed attacker captured': { ...core, combineDice: true, attackerLoss: 'captured' },
+    'D: A + no extra doubles': { ...core, combineDice: true, doubles: 'none' },
+    'E: separate dice only': { ...core, combineDice: false },
+  };
+}

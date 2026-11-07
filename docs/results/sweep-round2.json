@@ -1,0 +1,1147 @@
+{
+  "games": 240,
+  "skill": 40,
+  "baseRules": {
+    "combineDice": false,
+    "rescueMinDie": 6,
+    "supportBonus": 0
+  },
+  "rows": [
+    {
+      "name": "dice combining",
+      "rules": {
+        "combineDice": true,
+        "rescueMinDie": 6,
+        "supportBonus": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5083333333333333,
+        "drawRate": 0,
+        "avgTurns": 44.141666666666666,
+        "medianTurns": 38,
+        "capturesPerGame": 8.041666666666666,
+        "rescuesPerGame": 3.525,
+        "rewardsPerGame": 2.7916666666666665,
+        "combatsPerGame": 10.075,
+        "upsetRate": 0.07775020678246485,
+        "cardDecidedRate": 0.24731182795698925,
+        "attackerWinRate": 0.7981803143093466,
+        "comebackRate": 0.4,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.458333333333334,
+        "throneWinShare": 0.1,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.75,
+      "health": {
+        "score": 99.3,
+        "parts": {
+          "balance": 0.9666666666666668,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "failed attacker captured",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "attackerLoss": "captured"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5083333333333333,
+        "drawRate": 0,
+        "avgTurns": 56.40833333333333,
+        "medianTurns": 50,
+        "capturesPerGame": 9.575,
+        "rescuesPerGame": 5.341666666666667,
+        "rewardsPerGame": 2.9166666666666665,
+        "combatsPerGame": 9.575,
+        "upsetRate": 0.04264577893820714,
+        "cardDecidedRate": 0.16275021758050479,
+        "attackerWinRate": 0.8999129677980853,
+        "comebackRate": 0.45,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 11.091666666666667,
+        "throneWinShare": 0.21666666666666667,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.75,
+      "health": {
+        "score": 95.9,
+        "parts": {
+          "balance": 0.9666666666666668,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.6666666666666667,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "no home defense",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "homeDefense": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.55,
+        "drawRate": 0,
+        "avgTurns": 52.266666666666666,
+        "medianTurns": 47,
+        "capturesPerGame": 9.375,
+        "rescuesPerGame": 4.916666666666667,
+        "rewardsPerGame": 2.875,
+        "combatsPerGame": 12.108333333333333,
+        "upsetRate": 0.06951135581555402,
+        "cardDecidedRate": 0.23812801101169992,
+        "attackerWinRate": 0.774260151410874,
+        "comebackRate": 0.35833333333333334,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.691666666666666,
+        "throneWinShare": 0.125,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.75,
+      "health": {
+        "score": 95.9,
+        "parts": {
+          "balance": 0.7999999999999998,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "doubles: none",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "doubles": "none"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5333333333333333,
+        "drawRate": 0,
+        "avgTurns": 56.85,
+        "medianTurns": 52,
+        "capturesPerGame": 9.391666666666667,
+        "rescuesPerGame": 5.1,
+        "rewardsPerGame": 2.9833333333333334,
+        "combatsPerGame": 12,
+        "upsetRate": 0.10069444444444445,
+        "cardDecidedRate": 0.2513888888888889,
+        "attackerWinRate": 0.7826388888888889,
+        "comebackRate": 0.425,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.941666666666666,
+        "throneWinShare": 0.13333333333333333,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.775,
+      "health": {
+        "score": 95.5,
+        "parts": {
+          "balance": 0.8666666666666667,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.8333333333333335,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "range: unlimited",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "rangeMode": "unlimited"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.48333333333333334,
+        "drawRate": 0,
+        "avgTurns": 31.366666666666667,
+        "medianTurns": 29,
+        "capturesPerGame": 5.35,
+        "rescuesPerGame": 1.575,
+        "rewardsPerGame": 1.5666666666666667,
+        "combatsPerGame": 6.891666666666667,
+        "upsetRate": 0.1487303506650544,
+        "cardDecidedRate": 0.25634824667472794,
+        "attackerWinRate": 0.7762998790810157,
+        "comebackRate": 0.31666666666666665,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 8.466666666666667,
+        "throneWinShare": 0.15,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 95.1,
+        "parts": {
+          "balance": 0.9333333333333333,
+          "decisive": 1,
+          "length": 0.8561111111111112,
+          "skill": 0.8999999999999999,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "reward zone: back rank",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "promotionZone": "backRank"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5603448275862069,
+        "drawRate": 0.03333333333333333,
+        "avgTurns": 96.34166666666667,
+        "medianTurns": 83,
+        "capturesPerGame": 14.041666666666666,
+        "rescuesPerGame": 10.791666666666666,
+        "rewardsPerGame": 0.625,
+        "combatsPerGame": 21.5,
+        "upsetRate": 0.18914728682170542,
+        "cardDecidedRate": 0.3306201550387597,
+        "attackerWinRate": 0.6531007751937985,
+        "comebackRate": 0.35344827586206895,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 13.025,
+        "throneWinShare": 0.45689655172413796,
+        "winsBySpec": {
+          "heuristic:balanced": 232
+        }
+      },
+      "skillEdge": 0.775,
+      "health": {
+        "score": 93.6,
+        "parts": {
+          "balance": 0.7586206896551726,
+          "decisive": 0.9,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "capture: remove",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "captureMode": "remove"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5,
+        "drawRate": 0,
+        "avgTurns": 48.06666666666667,
+        "medianTurns": 44,
+        "capturesPerGame": 8.241666666666667,
+        "rescuesPerGame": 0,
+        "rewardsPerGame": 2.6416666666666666,
+        "combatsPerGame": 10.866666666666667,
+        "upsetRate": 0.11196319018404909,
+        "cardDecidedRate": 0.25996932515337423,
+        "attackerWinRate": 0.7584355828220859,
+        "comebackRate": 0.4666666666666667,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.616666666666667,
+        "throneWinShare": 0.25833333333333336,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 93.3,
+        "parts": {
+          "balance": 1,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.8999999999999999,
+          "comebacks": 0.5555555555555556,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "baseline",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5666666666666667,
+        "drawRate": 0,
+        "avgTurns": 56.1,
+        "medianTurns": 50,
+        "capturesPerGame": 9.558333333333334,
+        "rescuesPerGame": 5.325,
+        "rewardsPerGame": 3.066666666666667,
+        "combatsPerGame": 12.4,
+        "upsetRate": 0.10215053763440861,
+        "cardDecidedRate": 0.2553763440860215,
+        "attackerWinRate": 0.7708333333333334,
+        "comebackRate": 0.35833333333333334,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.916666666666666,
+        "throneWinShare": 0.11666666666666667,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 92.4,
+        "parts": {
+          "balance": 0.7333333333333334,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.8999999999999999,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "no dice combining",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5666666666666667,
+        "drawRate": 0,
+        "avgTurns": 56.1,
+        "medianTurns": 50,
+        "capturesPerGame": 9.558333333333334,
+        "rescuesPerGame": 5.325,
+        "rewardsPerGame": 3.066666666666667,
+        "combatsPerGame": 12.4,
+        "upsetRate": 0.10215053763440861,
+        "cardDecidedRate": 0.2553763440860215,
+        "attackerWinRate": 0.7708333333333334,
+        "comebackRate": 0.35833333333333334,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.916666666666666,
+        "throneWinShare": 0.11666666666666667,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 92.4,
+        "parts": {
+          "balance": 0.7333333333333334,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.8999999999999999,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "no support bonus",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5666666666666667,
+        "drawRate": 0,
+        "avgTurns": 56.1,
+        "medianTurns": 50,
+        "capturesPerGame": 9.558333333333334,
+        "rescuesPerGame": 5.325,
+        "rewardsPerGame": 3.066666666666667,
+        "combatsPerGame": 12.4,
+        "upsetRate": 0.10215053763440861,
+        "cardDecidedRate": 0.2553763440860215,
+        "attackerWinRate": 0.7708333333333334,
+        "comebackRate": 0.35833333333333334,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.916666666666666,
+        "throneWinShare": 0.11666666666666667,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 92.4,
+        "parts": {
+          "balance": 0.7333333333333334,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.8999999999999999,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "rescue: needs 6",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5666666666666667,
+        "drawRate": 0,
+        "avgTurns": 56.1,
+        "medianTurns": 50,
+        "capturesPerGame": 9.558333333333334,
+        "rescuesPerGame": 5.325,
+        "rewardsPerGame": 3.066666666666667,
+        "combatsPerGame": 12.4,
+        "upsetRate": 0.10215053763440861,
+        "cardDecidedRate": 0.2553763440860215,
+        "attackerWinRate": 0.7708333333333334,
+        "comebackRate": 0.35833333333333334,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.916666666666666,
+        "throneWinShare": 0.11666666666666667,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 92.4,
+        "parts": {
+          "balance": 0.7333333333333334,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.8999999999999999,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "victory: king only",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "victory": "king"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5666666666666667,
+        "drawRate": 0,
+        "avgTurns": 56.68333333333333,
+        "medianTurns": 50,
+        "capturesPerGame": 9.8,
+        "rescuesPerGame": 5.441666666666666,
+        "rewardsPerGame": 3.0833333333333335,
+        "combatsPerGame": 12.725,
+        "upsetRate": 0.1008513425016372,
+        "cardDecidedRate": 0.2540929927963327,
+        "attackerWinRate": 0.7701375245579568,
+        "comebackRate": 0.35833333333333334,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.933333333333334,
+        "throneWinShare": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 92.4,
+        "parts": {
+          "balance": 0.7333333333333334,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.8999999999999999,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "rescue: needs 3",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 3,
+        "supportBonus": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5583333333333333,
+        "drawRate": 0,
+        "avgTurns": 55.791666666666664,
+        "medianTurns": 51,
+        "capturesPerGame": 10.591666666666667,
+        "rescuesPerGame": 8.425,
+        "rewardsPerGame": 3,
+        "combatsPerGame": 13.791666666666666,
+        "upsetRate": 0.10332326283987915,
+        "cardDecidedRate": 0.24229607250755286,
+        "attackerWinRate": 0.76797583081571,
+        "comebackRate": 0.44166666666666665,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 10.058333333333334,
+        "throneWinShare": 0.058333333333333334,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.75,
+      "health": {
+        "score": 92.3,
+        "parts": {
+          "balance": 0.7666666666666666,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.7222222222222224,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "no barricades",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "barricades": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.48333333333333334,
+        "drawRate": 0,
+        "avgTurns": 46.083333333333336,
+        "medianTurns": 43,
+        "capturesPerGame": 9.108333333333333,
+        "rescuesPerGame": 4.65,
+        "rewardsPerGame": 2.7916666666666665,
+        "combatsPerGame": 11.141666666666667,
+        "upsetRate": 0.10097232610321616,
+        "cardDecidedRate": 0.2475691847419596,
+        "attackerWinRate": 0.8175018698578908,
+        "comebackRate": 0.4666666666666667,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 0,
+        "throneWinShare": 0.275,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 92,
+        "parts": {
+          "balance": 0.9333333333333333,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.8999999999999999,
+          "comebacks": 0.5555555555555556,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "doubles: four",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "doubles": "four"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.4666666666666667,
+        "drawRate": 0,
+        "avgTurns": 50.45,
+        "medianTurns": 45,
+        "capturesPerGame": 9.591666666666667,
+        "rescuesPerGame": 4.775,
+        "rewardsPerGame": 3,
+        "combatsPerGame": 12.775,
+        "upsetRate": 0.1050228310502283,
+        "cardDecidedRate": 0.25896934116112197,
+        "attackerWinRate": 0.7508153946510111,
+        "comebackRate": 0.43333333333333335,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.933333333333334,
+        "throneWinShare": 0.13333333333333333,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.7,
+      "health": {
+        "score": 90.8,
+        "parts": {
+          "balance": 0.8666666666666667,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.7999999999999998,
+          "comebacks": 0.7777777777777778,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "cards: blind draw",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "handSize": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.525,
+        "drawRate": 0,
+        "avgTurns": 57.925,
+        "medianTurns": 51,
+        "capturesPerGame": 10.033333333333333,
+        "rescuesPerGame": 5.616666666666666,
+        "rewardsPerGame": 2.9833333333333334,
+        "combatsPerGame": 17.941666666666666,
+        "upsetRate": 0.12540640966093822,
+        "cardDecidedRate": 0.23734324198792384,
+        "attackerWinRate": 0.5592196934509986,
+        "comebackRate": 0.48333333333333334,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.908333333333333,
+        "throneWinShare": 0.08333333333333333,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 90.1,
+        "parts": {
+          "balance": 0.8999999999999999,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.8999999999999999,
+          "comebacks": 0.44444444444444453,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "rescue: needs 5",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 5,
+        "supportBonus": 0
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5333333333333333,
+        "drawRate": 0,
+        "avgTurns": 59.18333333333333,
+        "medianTurns": 50,
+        "capturesPerGame": 10.65,
+        "rescuesPerGame": 7.708333333333333,
+        "rewardsPerGame": 3.191666666666667,
+        "combatsPerGame": 13.933333333333334,
+        "upsetRate": 0.10645933014354067,
+        "cardDecidedRate": 0.2553827751196172,
+        "attackerWinRate": 0.7643540669856459,
+        "comebackRate": 0.5083333333333333,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 10.141666666666667,
+        "throneWinShare": 0.10833333333333334,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.75,
+      "health": {
+        "score": 89.8,
+        "parts": {
+          "balance": 0.8666666666666667,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.2777777777777781,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "reward: choice",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "promotionMode": "choice"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.625,
+        "drawRate": 0,
+        "avgTurns": 57.425,
+        "medianTurns": 50,
+        "capturesPerGame": 10.066666666666666,
+        "rescuesPerGame": 5.633333333333334,
+        "rewardsPerGame": 3.075,
+        "combatsPerGame": 13.133333333333333,
+        "upsetRate": 0.10025380710659898,
+        "cardDecidedRate": 0.2550761421319797,
+        "attackerWinRate": 0.766497461928934,
+        "comebackRate": 0.4083333333333333,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.883333333333333,
+        "throneWinShare": 0.15833333333333333,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.8,
+      "health": {
+        "score": 89.1,
+        "parts": {
+          "balance": 0.5,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.9444444444444446,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "pawns: one step",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "pawnMode": "one"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5321100917431193,
+        "drawRate": 0.09166666666666666,
+        "avgTurns": 142.45833333333334,
+        "medianTurns": 121,
+        "capturesPerGame": 9.916666666666666,
+        "rescuesPerGame": 6.666666666666667,
+        "rewardsPerGame": 1.625,
+        "combatsPerGame": 15.316666666666666,
+        "upsetRate": 0.1969532100108814,
+        "cardDecidedRate": 0.30087051142546245,
+        "attackerWinRate": 0.6474428726877041,
+        "comebackRate": 0.27522935779816515,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 10.475,
+        "throneWinShare": 0.1926605504587156,
+        "winsBySpec": {
+          "heuristic:balanced": 218
+        }
+      },
+      "skillEdge": 0.7894736842105263,
+      "health": {
+        "score": 88,
+        "parts": {
+          "balance": 0.8715596330275228,
+          "decisive": 0.7250000000000001,
+          "length": 0.4590277777777776,
+          "skill": 1,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "army: forward pawns",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "startingArmy": "forward"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.49166666666666664,
+        "drawRate": 0,
+        "avgTurns": 72.99166666666666,
+        "medianTurns": 71,
+        "capturesPerGame": 19.883333333333333,
+        "rescuesPerGame": 11.108333333333333,
+        "rewardsPerGame": 4.058333333333334,
+        "combatsPerGame": 26.858333333333334,
+        "upsetRate": 0.12783121315544524,
+        "cardDecidedRate": 0.28730995966490847,
+        "attackerWinRate": 0.7403040645361465,
+        "comebackRate": 0.7916666666666666,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.075,
+        "throneWinShare": 0.10833333333333334,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 86.9,
+        "parts": {
+          "balance": 0.9666666666666666,
+          "decisive": 1,
+          "length": 1,
+          "skill": 0.8999999999999999,
+          "comebacks": 0,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "army: full",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "startingArmy": "full"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.55,
+        "drawRate": 0,
+        "avgTurns": 61.4,
+        "medianTurns": 55,
+        "capturesPerGame": 16.466666666666665,
+        "rescuesPerGame": 8.65,
+        "rewardsPerGame": 1.7583333333333333,
+        "combatsPerGame": 21.341666666666665,
+        "upsetRate": 0.11557985162046076,
+        "cardDecidedRate": 0.2694260054666146,
+        "attackerWinRate": 0.7715736040609137,
+        "comebackRate": 0.5333333333333333,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.375,
+        "throneWinShare": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.875,
+      "health": {
+        "score": 86.7,
+        "parts": {
+          "balance": 0.7999999999999998,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.11111111111111127,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "reward: promote",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "promotionMode": "promote"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5666666666666667,
+        "drawRate": 0,
+        "avgTurns": 23.483333333333334,
+        "medianTurns": 21,
+        "capturesPerGame": 3.5416666666666665,
+        "rescuesPerGame": 0.7166666666666667,
+        "rewardsPerGame": 1.275,
+        "combatsPerGame": 4.241666666666666,
+        "upsetRate": 0.10412573673870335,
+        "cardDecidedRate": 0.1787819253438114,
+        "attackerWinRate": 0.8349705304518664,
+        "comebackRate": 0.075,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 8.066666666666666,
+        "throneWinShare": 0.14166666666666666,
+        "winsBySpec": {
+          "heuristic:balanced": 240
+        }
+      },
+      "skillEdge": 0.725,
+      "health": {
+        "score": 85.9,
+        "parts": {
+          "balance": 0.7333333333333334,
+          "decisive": 1,
+          "length": 0.7247222222222223,
+          "skill": 0.8999999999999999,
+          "comebacks": 0.7,
+          "luck": 1,
+          "action": 0.923611111111111,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "support bonus on",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 1
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5508474576271186,
+        "drawRate": 0.016666666666666666,
+        "avgTurns": 76.99166666666666,
+        "medianTurns": 57,
+        "capturesPerGame": 15.275,
+        "rescuesPerGame": 10.158333333333333,
+        "rewardsPerGame": 4.066666666666666,
+        "combatsPerGame": 19.333333333333332,
+        "upsetRate": 0.13577586206896552,
+        "cardDecidedRate": 0.22327586206896552,
+        "attackerWinRate": 0.7900862068965517,
+        "comebackRate": 0.559322033898305,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 10.191666666666666,
+        "throneWinShare": 0.15254237288135594,
+        "winsBySpec": {
+          "heuristic:balanced": 236
+        }
+      },
+      "skillEdge": 0.8,
+      "health": {
+        "score": 84.8,
+        "parts": {
+          "balance": 0.7966101694915255,
+          "decisive": 0.95,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "cards: full scale",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "cardScale": "full"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5882352941176471,
+        "drawRate": 0.008333333333333333,
+        "avgTurns": 62.19166666666667,
+        "medianTurns": 50,
+        "capturesPerGame": 10.416666666666666,
+        "rescuesPerGame": 6.691666666666666,
+        "rewardsPerGame": 3.325,
+        "combatsPerGame": 15.275,
+        "upsetRate": 0.2220403709765412,
+        "cardDecidedRate": 0.37315875613747956,
+        "attackerWinRate": 0.6819421713038735,
+        "comebackRate": 0.4369747899159664,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 10.175,
+        "throneWinShare": 0.09243697478991597,
+        "winsBySpec": {
+          "heuristic:balanced": 238
+        }
+      },
+      "skillEdge": 0.7,
+      "health": {
+        "score": 84.5,
+        "parts": {
+          "balance": 0.6470588235294117,
+          "decisive": 0.975,
+          "length": 1,
+          "skill": 0.7999999999999998,
+          "comebacks": 0.7535014005602242,
+          "luck": 0.8842062193126021,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "reward: none",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "promotionMode": "none"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.5701754385964912,
+        "drawRate": 0.05,
+        "avgTurns": 125.99166666666666,
+        "medianTurns": 112,
+        "capturesPerGame": 17.858333333333334,
+        "rescuesPerGame": 14.85,
+        "rewardsPerGame": 0,
+        "combatsPerGame": 29.05,
+        "upsetRate": 0.2059667240390132,
+        "cardDecidedRate": 0.34968445209409066,
+        "attackerWinRate": 0.6147446930579461,
+        "comebackRate": 0.5175438596491229,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 15.366666666666667,
+        "throneWinShare": 0.5614035087719298,
+        "winsBySpec": {
+          "heuristic:balanced": 228
+        }
+      },
+      "skillEdge": 0.8108108108108109,
+      "health": {
+        "score": 81.3,
+        "parts": {
+          "balance": 0.7192982456140351,
+          "decisive": 0.85,
+          "length": 0.7334722222222223,
+          "skill": 1,
+          "comebacks": 0.21637426900584766,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "combat: none (chess capture)",
+      "rules": {
+        "combineDice": false,
+        "rescueMinDie": 6,
+        "supportBonus": 0,
+        "combat": "none"
+      },
+      "summary": {
+        "games": 240,
+        "firstPlayerWinRate": 0.4188034188034188,
+        "drawRate": 0.025,
+        "avgTurns": 93.21666666666667,
+        "medianTurns": 70,
+        "capturesPerGame": 22.116666666666667,
+        "rescuesPerGame": 15.766666666666667,
+        "rewardsPerGame": 4.933333333333334,
+        "combatsPerGame": 0,
+        "upsetRate": 0,
+        "cardDecidedRate": 0,
+        "attackerWinRate": 0,
+        "comebackRate": 0.6495726495726496,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.95,
+        "throneWinShare": 0.05982905982905983,
+        "winsBySpec": {
+          "heuristic:balanced": 234
+        }
+      },
+      "skillEdge": 0.9,
+      "health": {
+        "score": 76.7,
+        "parts": {
+          "balance": 0.6752136752136753,
+          "decisive": 0.925,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0,
+          "luck": 0.5,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    }
+  ]
+}
