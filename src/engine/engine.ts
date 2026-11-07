@@ -45,16 +45,19 @@ export interface PieceInfo {
   kind: Kind;
   /** A pawn that has already earned its advancement reward. */
   veteran: boolean;
+  /** A piece that has already unlocked a muster by entering the battle zone. */
+  marched: boolean;
 }
 
-export function encode(owner: Player, kind: Kind, veteran = false): number {
-  return 1 + KINDS.indexOf(kind) + owner * 8 + (veteran ? 32 : 0);
+export function encode(owner: Player, kind: Kind, veteran = false, marched = false): number {
+  return 1 + KINDS.indexOf(kind) + owner * 8 + (veteran ? 32 : 0) + (marched ? 64 : 0);
 }
 export function decode(code: number): PieceInfo | null {
   if (!code) return null;
   const v = code - 1;
-  return { owner: ((v >> 3) & 1) as Player, kind: KINDS[v & 7], veteran: ((v >> 5) & 1) === 1 };
+  return { owner: ((v >> 3) & 1) as Player, kind: KINDS[v & 7], veteran: ((v >> 5) & 1) === 1, marched: ((v >> 6) & 1) === 1 };
 }
+const isMarched = (code: number) => (((code - 1) >> 6) & 1) === 1;
 const ownerOf = (code: number) => (((code - 1) >> 3) & 1) as Player;
 const kindOf = (code: number) => KINDS[(code - 1) & 7];
 const isVet = (code: number) => (((code - 1) >> 5) & 1) === 1;
@@ -96,6 +99,7 @@ export interface Stats {
   /** Combats where the card swing decided the result (would have gone the other way with no cards). */
   cardDecided: number;
   skippedTurns: [number, number];
+  musters: [number, number];
   /** Quest rooms cleared, trials attempted and failed, shields that saved a piece. */
   questRooms: [number, number];
   trials: number;
@@ -143,6 +147,10 @@ export interface GameState {
   questEase: [number, number];
   /** Most recent quest trial, for the UI. */
   lastTrial: TrialResult | null;
+  /** A muster waiting for its owner to choose a piece and a back-row square. */
+  pendingMuster: { player: Player; rolls: number[]; options: Kind[] } | null;
+  /** For 'oncePerTurn' musters. */
+  musteredThisTurn: boolean;
   log: string[];
   logEnabled: boolean;
 }
@@ -153,6 +161,8 @@ export type Action =
   | { t: 'barricade'; to: number; dice: number[] }
   | { t: 'rescue'; kind: Kind; to: number; dice: number[] }
   | { t: 'deploy'; kind: Kind; to: number; dice: number[] }
+  | { t: 'muster'; kind: Kind; to: number }
+  | { t: 'skipMuster' }
   | { t: 'end' };
 
 export interface CombatResult {
@@ -255,6 +265,7 @@ export function createGame(seed: number, rulesIn?: Partial<RuleConfig> | RuleCon
       upsets: 0,
       cardDecided: 0,
       skippedTurns: [0, 0],
+      musters: [0, 0],
       actions: [0, 0],
       minLead: [0, 0],
       questRooms: [0, 0],
@@ -267,6 +278,8 @@ export function createGame(seed: number, rulesIn?: Partial<RuleConfig> | RuleCon
     shields: [0, 0],
     questEase: [0, 0],
     lastTrial: null,
+    pendingMuster: null,
+    musteredThisTurn: false,
     log: [],
     logEnabled: !!opts.log,
   };
@@ -324,11 +337,13 @@ export function cloneState(s: GameState): GameState {
       reinforcements: [...s.stats.reinforcements],
       barricadesPlaced: [...s.stats.barricadesPlaced],
       skippedTurns: [...s.stats.skippedTurns],
+      musters: [...s.stats.musters],
       actions: [...s.stats.actions],
       minLead: [...s.stats.minLead],
       questRooms: [...s.stats.questRooms],
     },
     questStage: [s.questStage[0], s.questStage[1]],
+    pendingMuster: s.pendingMuster ? { ...s.pendingMuster, rolls: s.pendingMuster.rolls.slice(), options: s.pendingMuster.options.slice() } : null,
     shields: [s.shields[0], s.shields[1]],
     questEase: [s.questEase[0], s.questEase[1]],
     log: s.logEnabled ? s.log.slice() : s.log,
@@ -380,6 +395,7 @@ function startTurn(s: GameState) {
   if (s.turn === 0 && s.rules.firstTurnOneDie) dice = [a];
   s.dice = dice;
   s.rolled = dice.slice();
+  s.musteredThisTurn = false;
   const lead = material(s, s.toMove) - material(s, (1 - s.toMove) as Player);
   if (lead < s.stats.minLead[s.toMove]) s.stats.minLead[s.toMove] = lead;
   if (-lead < s.stats.minLead[1 - s.toMove]) s.stats.minLead[1 - s.toMove] = -lead;
@@ -571,6 +587,18 @@ export function combatBase(s: GameState, square: number, owner: Player, kind: Ki
 
 export function legalActions(s: GameState): Action[] {
   if (s.winner !== null || s.draw) return [];
+  if (s.pendingMuster) {
+    const pm = s.pendingMuster;
+    const out: Action[] = [];
+    const row = backRow(pm.player);
+    for (const kind of pm.options)
+      for (let c = 0; c < COLS; c++) {
+        const t = sq(row, c);
+        if (!s.board[t] && s.barricade[t] === -1) out.push({ t: 'muster', kind, to: t });
+      }
+    out.push({ t: 'skipMuster' });
+    return out;
+  }
   const out: Action[] = [];
   const p = s.toMove;
   const r = s.rules;
@@ -763,6 +791,17 @@ export function applyAction(s: GameState, a: Action, opts: { forceTrial?: boolea
     endTurn(s);
     return;
   }
+  if (a.t === 'muster' || a.t === 'skipMuster') {
+    if (a.t === 'muster') {
+      s.reserve[p][a.kind]--;
+      s.board[a.to] = encode(p, a.kind);
+      s.stats.musters[p]++;
+      log(s, `Mustered a ${a.kind} on ${squareName(a.to)}`);
+    }
+    s.pendingMuster = null;
+    if (s.dice.length === 0) endTurn(s);
+    return;
+  }
   s.stats.actions[p]++;
   spendDice(s, a.dice);
 
@@ -814,6 +853,7 @@ export function applyAction(s: GameState, a: Action, opts: { forceTrial?: boolea
           runTrial(s, a.to, opts.forceTrial);
           if (s.winner !== null) return;
         }
+        if (s.rules.muster !== 'off' && territoryOf(a.to) === 1 && territoryOf(a.from) !== 1) maybeMuster(s, a.to, code);
       }
       break;
     }
@@ -844,7 +884,28 @@ export function applyAction(s: GameState, a: Action, opts: { forceTrial?: boolea
       break;
     }
   }
-  if (s.dice.length === 0) endTurn(s);
+  if (s.dice.length === 0 && !s.pendingMuster) endTurn(s);
+}
+
+/** A piece just entered the battle zone: check whether it unlocks a muster, and roll for it. */
+function maybeMuster(s: GameState, square: number, codeBefore: number) {
+  const p = s.toMove;
+  const mode = s.rules.muster;
+  if (mode === 'firstEntry') {
+    if (isMarched(codeBefore)) return;
+    const c = s.board[square];
+    if (c) s.board[square] = encode(ownerOf(c), kindOf(c), isVet(c), true);
+  } else if (mode === 'oncePerTurn') {
+    if (s.musteredThisTurn) return;
+    s.musteredThisTurn = true;
+  }
+  const rolls = [rollDie(s), rollDie(s)];
+  const options = [...new Set(rolls.map((d) => s.rules.musterMap[d - 1]))].filter((k) => s.reserve[p][k] > 0);
+  const row = backRow(p);
+  let room = false;
+  for (let c = 0; c < COLS; c++) if (!s.board[sq(row, c)] && s.barricade[sq(row, c)] === -1) room = true;
+  log(s, `Muster roll ${rolls.join(' and ')}${options.length && room ? '' : ': nothing available'}`);
+  if (options.length && room) s.pendingMuster = { player: p, rolls, options };
 }
 
 /** True if `square` is one of player p's rooms for their current quest stage. */

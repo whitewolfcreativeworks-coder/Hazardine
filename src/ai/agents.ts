@@ -164,6 +164,15 @@ export function evaluate(s: GameState, p: Player, w: Weights): number {
       score += sign * w.quest * t;
     }
   }
+  // A muster waiting to be placed: count its expected value without peeking at the actual roll.
+  if (s.pendingMuster) {
+    const q = s.pendingMuster.player;
+    const map = s.rules.musterMap;
+    const avail = (k: Kind) => (s.reserve[q][k] > 0 ? str[k] : 0);
+    let ev = 0;
+    for (let a = 0; a < 6; a++) for (let b = 0; b < 6; b++) ev += Math.max(avail(map[a]), avail(map[b])) / 36;
+    score += (q === p ? 1 : -1) * w.ready * ev;
+  }
   // Jail: an imprisoned piece keeps part of its value (it might come back).
   for (const q of [0, 1] as Player[]) {
     const sign = q === p ? 1 : -1;

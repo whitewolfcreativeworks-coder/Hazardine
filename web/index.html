@@ -72,6 +72,7 @@
             <option value="default">Current provisional rules</option>
             <option value="full">Full chess armies</option>
             <option value="classic">No cards (chess-style captures)</option>
+            <option value="muster">Muster: entering the battle zone calls up new pieces</option>
             <option value="quest">Quest mode: complete your dungeon to win</option>
             <option value="questBoons">Quest mode: dungeon boons only</option>
           </select>
@@ -91,6 +92,15 @@
         <h2>Your pawn crossed into enemy land</h2>
         <p>Choose its reward.</p>
         <div id="reward-options" class="reward-options"></div>
+      </form>
+    </dialog>
+
+    <dialog id="dlg-muster">
+      <form method="dialog">
+        <h2>Muster</h2>
+        <p id="muster-roll"></p>
+        <p>Your piece entered the battle zone. Choose a piece to place on your back row.</p>
+        <div id="muster-options" class="reward-options"></div>
       </form>
     </dialog>
 

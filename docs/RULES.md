@@ -12,7 +12,7 @@ Two chessboards and one checkerboard laid end to end (8 × 24 squares), pieces f
 - **Rows 9-16:** the battle zone (red-and-black checkerboard).
 - **Rows 17-24:** Ebony's homeland (chessboard).
 
-Each king starts on its **throne**: the e-file square of its back row.
+Each army has **one king**. It starts on its **throne**: the e-file square of its back row. The second king from your spare set stays in the box.
 
 ## Setup
 

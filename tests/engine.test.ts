@@ -427,3 +427,41 @@ describe('battle zone', () => {
     expect(s.lastCombat?.chargeCard).toBeDefined();
   });
 });
+
+describe('muster', () => {
+  it('a piece entering the battle zone unlocks a new piece on the back row', () => {
+    const s = blank({ muster: 'firstEntry' }, [2, 3]);
+    s.board[sq(0, 4)] = encode(0, 'K');
+    s.board[sq(23, 4)] = encode(1, 'K');
+    s.board[sq(6, 2)] = encode(0, 'R');
+    applyAction(s, legalActions(s).find((a) => a.t === 'move' && a.from === sq(6, 2) && a.to === sq(8, 2))!);
+    expect(s.pendingMuster).not.toBeNull();
+    const opts = legalActions(s);
+    expect(opts.every((a) => a.t === 'muster' || a.t === 'skipMuster')).toBe(true);
+    expect(opts.filter((a) => a.t === 'muster').every((a) => a.t === 'muster' && Math.floor(a.to / 8) === 0)).toBe(true);
+    applyAction(s, opts.find((a) => a.t === 'muster')!);
+    expect(s.pendingMuster).toBeNull();
+    expect(s.stats.musters[0]).toBe(1);
+    expect(s.toMove).toBe(0); // one die is still left
+  });
+
+  it('each piece unlocks only once in firstEntry mode', () => {
+    const s = blank({ muster: 'firstEntry' }, [1, 1]);
+    s.board[sq(0, 4)] = encode(0, 'K');
+    s.board[sq(23, 4)] = encode(1, 'K');
+    s.board[sq(7, 2)] = encode(0, 'R', false, true); // already marched
+    applyAction(s, legalActions(s).find((a) => a.t === 'move' && a.from === sq(7, 2) && a.to === sq(8, 2))!);
+    expect(s.pendingMuster).toBeNull();
+  });
+
+  it('waits for the muster choice before ending the turn', () => {
+    const s = blank({ muster: 'everyEntry' }, [1]);
+    s.board[sq(0, 4)] = encode(0, 'K');
+    s.board[sq(23, 4)] = encode(1, 'K');
+    s.board[sq(7, 2)] = encode(0, 'R');
+    applyAction(s, legalActions(s).find((a) => a.t === 'move' && a.from === sq(7, 2) && a.to === sq(8, 2))!);
+    expect(s.toMove).toBe(0);
+    applyAction(s, { t: 'skipMuster' });
+    expect(s.toMove).toBe(1);
+  });
+});

@@ -35,12 +35,13 @@ const PRESETS: Record<string, Partial<RuleConfig>> = {
   default: {},
   full: { startingArmy: 'full' },
   classic: { combat: 'none' },
+  muster: { muster: 'firstEntry' },
   quest: { quest: 'win', firstTurnOneDie: false },
   questBoons: { quest: 'boons', firstTurnOneDie: false },
 };
 
 type Mode = 'hvc' | 'hvh' | 'cvc';
-type Pick = { t: 'idle' } | { t: 'piece'; from: number } | { t: 'barricade' } | { t: 'rescue'; kind: Kind } | { t: 'deploy'; kind: Kind };
+type Pick = { t: 'idle' } | { t: 'piece'; from: number } | { t: 'barricade' } | { t: 'rescue'; kind: Kind } | { t: 'deploy'; kind: Kind } | { t: 'muster'; kind: Kind };
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -100,6 +101,7 @@ function actionsForPick(): Map<number, Action[]> {
     if (pick.t === 'barricade' && a.t === 'barricade') add(a.to, a);
     if (pick.t === 'rescue' && a.t === 'rescue' && a.kind === pick.kind) add(a.to, a);
     if (pick.t === 'deploy' && a.t === 'deploy' && a.kind === pick.kind) add(a.to, a);
+    if (pick.t === 'muster' && a.t === 'muster' && a.kind === pick.kind) add(a.to, a);
   }
   return out;
 }
@@ -117,7 +119,7 @@ function pickAction(cands: Action[]): Action[] {
 function take(a: Action) {
   const mover = game.toMove;
   if (a.t === 'move') lastMove = { from: a.from, to: a.to };
-  else if (a.t !== 'end') lastMove = { to: a.to };
+  else if ('to' in a) lastMove = { to: a.to };
   applyAction(game, a);
   pick = { t: 'idle' };
   if (game.toMove !== mover || game.lastCombat) cardChoice = bestCardIndex(game.toMove);
@@ -175,9 +177,47 @@ function scheduleBot() {
 
 // ---------- rendering ----------
 
+let musterShown = false;
+function maybeAskMuster() {
+  const pm = game.pendingMuster;
+  if (!pm || !isHumanTurn()) {
+    musterShown = false;
+    return;
+  }
+  if (musterShown || pick.t === 'muster') return;
+  musterShown = true;
+  const box = $('muster-options');
+  box.innerHTML = '';
+  const dieFor = (k: Kind) => pm.rolls.filter((d) => game.rules.musterMap[d - 1] === k);
+  $('muster-roll').textContent = `You rolled ${pm.rolls.join(' and ')}.`;
+  for (const k of pm.options) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'reward';
+    b.innerHTML = `<span class="glyph side-${pm.player}">${GLYPH[k]}</span><span>${KIND_NAME[k]} <span class="muted">(die ${dieFor(k).join(' or ')})</span></span>`;
+    b.onclick = () => {
+      ($('dlg-muster') as HTMLDialogElement).close();
+      pick = { t: 'muster', kind: k };
+      render();
+    };
+    box.append(b);
+  }
+  const skip = document.createElement('button');
+  skip.type = 'button';
+  skip.className = 'ghost';
+  skip.textContent = 'Skip this muster';
+  skip.onclick = () => {
+    ($('dlg-muster') as HTMLDialogElement).close();
+    take({ t: 'skipMuster' });
+  };
+  box.append(skip);
+  ($('dlg-muster') as HTMLDialogElement).showModal();
+}
+
 function render() {
   renderBoard();
   renderTray();
+  maybeAskMuster();
 }
 
 function renderBoard() {
@@ -420,7 +460,7 @@ function renderTray() {
   btnB.hidden = game.rules.barricades === 0;
   btnB.disabled = !canBarricade;
   btnB.classList.toggle('active', pick.t === 'barricade');
-  ($('btn-end') as HTMLButtonElement).disabled = !human;
+  ($('btn-end') as HTMLButtonElement).disabled = !human || !!game.pendingMuster;
 
   // Log
   const log = $('log');
@@ -441,6 +481,8 @@ function statusHint(): string {
   if (pick.t === 'barricade') return 'Tap a glowing square to place a barricade.';
   if (pick.t === 'rescue') return `Tap a home square to return your ${KIND_NAME[pick.kind].toLowerCase()}.`;
   if (pick.t === 'deploy') return `Tap a home square to deploy your ${KIND_NAME[pick.kind].toLowerCase()}.`;
+  if (pick.t === 'muster') return `Tap a square on your back row to place the ${KIND_NAME[pick.kind].toLowerCase()}.`;
+  if (game.pendingMuster) return 'Muster: choose which piece to bring out.';
   if (pick.t === 'piece') {
     const n = actionsForPick().size;
     return n ? 'Tap a highlighted square. Rings mark attacks.' : 'That piece has no moves with these dice.';
@@ -465,6 +507,7 @@ function rulesHtml(r: RuleConfig) {
       ? `<p><strong>Attacking.</strong> Moving onto an enemy starts a fight. Each side adds its unit strength (pawn ${r.strength.P}, knight and bishop ${r.strength.N}, rook ${r.strength.R}, queen ${r.strength.Q}, king ${r.strength.K}), +${r.supportBonus} for each friendly neighbour (up to ${r.supportCap}), and a card. ${r.handSize ? `Attackers choose a card from a hand of ${r.handSize}; defenders draw blind.` : 'Both sides draw blind.'} Defenders get +${r.homeDefense} at home${r.barricades ? ` and +${r.fortBonus} beside their own barricade` : ''}. Higher total wins; ties go to the defender. A beaten attacker ${r.attackerLoss === 'repelled' ? 'stays where it was' : 'is captured'}.</p>`
       : '<p><strong>Attacking.</strong> Moving onto an enemy captures it, as in chess.</p>'
   }
+  ${r.muster !== 'off' ? `<p><strong>Muster.</strong> When one of your pieces enters the battle zone${r.muster === 'firstEntry' ? ' for the first time' : r.muster === 'oncePerTurn' ? ' (once per turn)' : ''}, roll two dice and choose one. ${[1, 2, 3, 4, 5, 6].map((d) => `${d} = ${KIND_NAME[r.musterMap[d - 1]].toLowerCase()}`).join(', ')}. Place that piece free on your back row, if your supply still has one.</p>` : ''}
   ${r.captureMode === 'jail' ? `<p><strong>Jail.</strong> Captured pieces go to jail. Spend a die of ${r.rescueMinDie} or more to bring one back to your home rows.</p>` : ''}
   ${r.promotionMode !== 'none' ? `<p><strong>Crossing.</strong> A pawn that reaches ${r.promotionZone === 'enemyHome' ? 'the enemy homeland' : 'the far edge'} ${r.promotionMode === 'reinforce' ? 'earns a new piece. Spend any die to deploy it on your home rows.' : r.promotionMode === 'promote' ? 'becomes a stronger piece.' : 'either becomes a stronger piece or earns one at home.'}</p>` : ''}
   ${r.barricades ? `<p><strong>Barricades.</strong> Spend a die to place one of your ${r.barricades} checkers (Ivory red, Ebony black) next to your pieces (not in enemy land). They block movement. An adjacent enemy can knock one down with a ${r.demolishMinDie} or higher.</p>` : ''}

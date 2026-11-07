@@ -69,3 +69,16 @@ export function BATTLE(): Record<string, Partial<RuleConfig>> {
     'charge: attacker adds a card in the middle': { battleZone: 'charge' },
   };
 }
+
+/** Muster: pieces entering the battle zone unlock new pieces on the back row. */
+export function MUSTER(): Record<string, Partial<RuleConfig>> {
+  return {
+    'no muster (current)': {},
+    'muster: each piece once': { muster: 'firstEntry' },
+    'muster: every entry': { muster: 'everyEntry' },
+    'muster: once per turn': { muster: 'oncePerTurn' },
+    'muster once each, no pawn reward': { muster: 'firstEntry', promotionMode: 'none' },
+    'muster once each, no queens (6 = rook)': { muster: 'firstEntry', musterMap: ['P', 'P', 'N', 'B', 'R', 'R'] },
+    'muster once each, full armies': { muster: 'firstEntry', startingArmy: 'full' },
+  };
+}

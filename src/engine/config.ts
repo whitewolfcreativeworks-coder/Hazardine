@@ -42,6 +42,13 @@ export interface RuleConfig {
    */
   battleZone: 'none' | 'colorGround' | 'charge';
   battleBonus: number;
+  /**
+   * Muster: moving a piece into the battle zone unlocks a new piece. Roll two dice, pick one, and
+   * place the piece that die stands for (musterMap, faces 1-6) on your back row, from your supply.
+   * 'firstEntry' = each piece unlocks once; 'everyEntry' = every entry; 'oncePerTurn' = first entry each turn.
+   */
+  muster: 'off' | 'firstEntry' | 'everyEntry' | 'oncePerTurn';
+  musterMap: Kind[];
   /** Bonus to a defender standing in its own homeland. */
   homeDefense: number;
 
@@ -107,6 +114,8 @@ export const DEFAULT_RULES: RuleConfig = {
   supportCap: 2,
   battleZone: 'colorGround',
   battleBonus: 2,
+  muster: 'off',
+  musterMap: ['P', 'P', 'N', 'B', 'R', 'Q'],
   homeDefense: 1,
   captureMode: 'jail',
   rescueMinDie: 6,
@@ -129,5 +138,6 @@ export function makeRules(overrides: Partial<RuleConfig> = {}): RuleConfig {
     ...overrides,
     strength: { ...DEFAULT_RULES.strength, ...(overrides.strength ?? {}) },
     questDifficulty: (overrides.questDifficulty ?? DEFAULT_RULES.questDifficulty).slice(),
+    musterMap: (overrides.musterMap ?? DEFAULT_RULES.musterMap).slice(),
   };
 }

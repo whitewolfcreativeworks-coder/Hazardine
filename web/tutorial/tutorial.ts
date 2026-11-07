@@ -299,7 +299,7 @@ const stage: Stage = {
     } else {
       applyAction(s, a);
       render();
-      pop(a.to);
+      if ('to' in a) pop(a.to);
       await wait(500);
     }
     void mover;
@@ -339,7 +339,7 @@ async function liveGame() {
     } else {
       applyAction(s, a);
       render();
-      if (a.t !== 'end') {
+      if ('to' in a) {
         pop(a.to);
         await wait(380);
       } else await wait(160);
