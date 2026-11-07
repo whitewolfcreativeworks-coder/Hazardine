@@ -13,6 +13,7 @@ import {
   cardValue,
   isRed,
   squareName,
+  isOwnColor,
   questRooms,
   QUEST_ROOM_NAMES,
   SQUARES,
@@ -27,6 +28,8 @@ import { makeAgent, type Agent } from '../src/ai/agents';
 const GLYPH: Record<Kind, string> = { K: '♚', Q: '♛', R: '♜', B: '♝', N: '♞', P: '♟' };
 const KIND_NAME: Record<Kind, string> = { K: 'King', Q: 'Queen', R: 'Rook', B: 'Bishop', N: 'Knight', P: 'Pawn' };
 const SIDE = ['Ivory', 'Ebony'];
+/** Each army's color: its checkers, and its ground in the battle zone. */
+const COLOR = ['red', 'black'];
 
 const PRESETS: Record<string, Partial<RuleConfig>> = {
   default: {},
@@ -195,7 +198,15 @@ function renderBoard() {
     const terr = territoryOf(s);
     const dark = (rowOf(s) + colOf(s)) % 2 === 0;
     cell.className = `sq ${terr === 1 ? (dark ? 'mid-dark' : 'mid-light') : dark ? 'home-dark' : 'home-light'}`;
-    if (terr !== 1 && (rowOf(s) === 8 || rowOf(s) === 15 || rowOf(s) === 7 || rowOf(s) === 16)) cell.classList.add('frontier');
+    if (rowOf(s) === 8) cell.classList.add('zone-start');
+    if (rowOf(s) === 15) cell.classList.add('zone-end');
+    if (game.rules.battleZone === 'colorGround' && terr === 1 && pick.t === 'piece') {
+      const mover = decode(game.board[pick.from]);
+      if (mover && isOwnColor(s, mover.owner)) {
+        cell.classList.add('own-ground');
+        cell.dataset.bonus = String(game.rules.battleBonus);
+      }
+    }
     if (thrones.includes(s)) cell.classList.add('throne');
     if (game.rules.quest !== 'off') {
       for (const q of [0, 1] as Player[]) {
@@ -298,12 +309,22 @@ function renderTray() {
       r.insertAdjacentHTML('beforeend', `<span>=</span><strong>${total}</strong>`);
       return r;
     };
-    combat.append(row(lc.attacker, lc.attackerKind, lc.attackBase, lc.attackCard, lc.attackTotal));
+    const atkRow = row(lc.attacker, lc.attackerKind, lc.attackBase, lc.attackCard, lc.attackTotal);
+    if (lc.chargeCard !== undefined) atkRow.querySelector('.card')!.after(cardEl(lc.chargeCard, 'charge'));
+    combat.append(atkRow);
     combat.append(row((1 - lc.attacker) as Player, lc.defenderKind, lc.defenseBase, lc.defenseCard, lc.defenseTotal));
     const verdict = document.createElement('p');
     verdict.className = 'verdict';
     verdict.textContent = lc.attackerWon ? `${KIND_NAME[lc.defenderKind]} captured and sent to jail.` : `Attack repelled. Ties go to the defender.`;
     combat.append(verdict);
+    if (game.rules.battleZone === 'colorGround') {
+      const notes: string[] = [];
+      if (isOwnColor(lc.from, lc.attacker)) notes.push(`${SIDE[lc.attacker]} fought from ${COLOR[lc.attacker]} ground, +${game.rules.battleBonus}.`);
+      const def = (1 - lc.attacker) as Player;
+      if (isOwnColor(lc.to, def)) notes.push(`${SIDE[def]} held ${COLOR[def]} ground, +${game.rules.battleBonus}.`);
+      if (notes.length) combat.insertAdjacentHTML('beforeend', `<p class="ground-note">${notes.join(' ')}</p>`);
+    }
+    if (territoryOf(lc.to) === 1) document.querySelector(`#board .sq:nth-child(${lc.to + 1})`)?.classList.add('clash');
   }
 
   const lt = game.lastTrial;
@@ -354,7 +375,7 @@ function renderTray() {
   const legal = human ? legalActions(game) : [];
   for (const q of [0, 1] as Player[]) {
     const camp = $(`camp-${q}`);
-    camp.innerHTML = `<h3><span class="glyph side-${q}">♚</span> ${SIDE[q]}</h3>`;
+    camp.innerHTML = `<h3><span class="glyph side-${q}">♚</span> ${SIDE[q]} <span class="army-color color-${q}">${COLOR[q]}</span></h3>`;
     const line = (title: string, kinds: Kind[], kindAction: 'rescue' | 'deploy' | null, empty: string) => {
       const div = document.createElement('div');
       div.className = 'camp-line';
@@ -435,7 +456,8 @@ function rulesHtml(r: RuleConfig) {
   const pawn = r.pawnMode === 'half' ? 'Pawns step forward up to half the die (rounded up) and attack one square diagonally forward.' : 'Pawns step one square forward and attack one square diagonally forward.';
   return `
   <p><strong>Goal.</strong> Capture the enemy king${r.victory === 'kingOrThrone' ? ', or move any piece onto the square where the enemy king started (the throne)' : ''}.</p>
-  <p><strong>The field.</strong> Three boards end to end: your homeland, the contested red-and-black middle, and the enemy homeland.</p>
+  <p><strong>The field.</strong> Three boards end to end: your homeland, the red-and-black battle zone, and the enemy homeland.</p>
+  ${r.battleZone === 'colorGround' ? `<p><strong>Battle ground.</strong> Ivory's color is red and Ebony's is black, the same as their checkers. In the battle zone, a piece fighting from a square of its own color gets +${r.battleBonus}, attacking or defending. When you select a piece, its own-color squares show +${r.battleBonus}.</p>` : ''}
   <p><strong>Your turn.</strong> Roll two dice. Each die is one action.${r.firstTurnOneDie ? ' Ivory rolls only one die on the very first turn.' : ''}${r.doubles === 'three' ? ' Doubles give you three actions.' : r.doubles === 'four' ? ' Doubles give you four actions.' : ''}${r.combineDice ? ' You can also spend both dice on one long move.' : ''} End your turn whenever you like.</p>
   <p><strong>Moving.</strong> ${range} Knights and kings move as in chess with any die. ${pawn}</p>
   ${
@@ -445,7 +467,7 @@ function rulesHtml(r: RuleConfig) {
   }
   ${r.captureMode === 'jail' ? `<p><strong>Jail.</strong> Captured pieces go to jail. Spend a die of ${r.rescueMinDie} or more to bring one back to your home rows.</p>` : ''}
   ${r.promotionMode !== 'none' ? `<p><strong>Crossing.</strong> A pawn that reaches ${r.promotionZone === 'enemyHome' ? 'the enemy homeland' : 'the far edge'} ${r.promotionMode === 'reinforce' ? 'earns a new piece. Spend any die to deploy it on your home rows.' : r.promotionMode === 'promote' ? 'becomes a stronger piece.' : 'either becomes a stronger piece or earns one at home.'}</p>` : ''}
-  ${r.barricades ? `<p><strong>Barricades.</strong> Spend a die to place one of your ${r.barricades} checkers next to your pieces (not in enemy land). They block movement. An adjacent enemy can knock one down with a ${r.demolishMinDie} or higher.</p>` : ''}
+  ${r.barricades ? `<p><strong>Barricades.</strong> Spend a die to place one of your ${r.barricades} checkers (Ivory red, Ebony black) next to your pieces (not in enemy land). They block movement. An adjacent enemy can knock one down with a ${r.demolishMinDie} or higher.</p>` : ''}
   ${
     r.quest !== 'off'
       ? `<p><strong>Quest.</strong> Each side has three rooms (Ford, Crypt, Vault), marked on the board by its colour. When one of your pieces (not the king) ends a move on your next room, draw a card: strength + card must reach ${r.questDifficulty.join(', ')} for the three rooms. Pass and gain a boon: a new piece, then a shield, then ${r.quest === 'win' ? 'victory' : 'a queen and a freed prisoner'}. Fail and the piece goes to jail.${r.questLink ? ` Each room your rival clears makes your next trial ${r.questLink} easier.` : ''} <a href="quest-sheet.html" target="_blank" rel="noopener">Printable quest sheet</a>.</p>`

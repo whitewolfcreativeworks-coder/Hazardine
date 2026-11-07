@@ -59,3 +59,13 @@ export function QUESTS(): Record<string, Partial<RuleConfig>> {
     'quest: wins, harder rooms (8/10/12)': { quest: 'win', questDifficulty: [8, 10, 12] },
   };
 }
+
+/** Battle-zone rules: what makes the middle board special (and what the checker colors mean). */
+export function BATTLE(): Record<string, Partial<RuleConfig>> {
+  return {
+    'no battle-zone rule (current)': {},
+    'color ground +1': { battleZone: 'colorGround', battleBonus: 1 },
+    'color ground +2': { battleZone: 'colorGround', battleBonus: 2 },
+    'charge: attacker adds a card in the middle': { battleZone: 'charge' },
+  };
+}

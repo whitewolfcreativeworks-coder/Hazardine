@@ -169,6 +169,8 @@ export interface CombatResult {
   defenseTotal: number;
   attackerWon: boolean;
   shielded?: boolean;
+  /** Extra attacker card from a battle-zone charge. */
+  chargeCard?: number;
 }
 
 export interface TrialResult {
@@ -535,6 +537,16 @@ function comboOptions(s: GameState): { idx: number[]; v: number }[] {
   return out;
 }
 
+/**
+ * Battle-zone color: Ivory's color is red, Ebony's is black, matching their checkers.
+ * In the middle board, red squares are those where row + col is odd.
+ */
+export function isOwnColor(square: number, owner: Player): boolean {
+  if (territoryOf(square) !== 1) return false;
+  const red = (rowOf(square) + colOf(square)) % 2 === 1;
+  return owner === 0 ? red : !red;
+}
+
 /** Strength of a unit at a square before cards: base + support + terrain bonuses. */
 export function combatBase(s: GameState, square: number, owner: Player, kind: Kind, defending: boolean): number {
   const r = s.rules;
@@ -547,6 +559,7 @@ export function combatBase(s: GameState, square: number, owner: Player, kind: Ki
     if (s.barricade[a] === owner) fort = true;
   }
   v += Math.min(support, r.supportCap) * r.supportBonus;
+  if (r.battleZone === 'colorGround' && isOwnColor(square, owner)) v += r.battleBonus;
   if (defending) {
     if (fort) v += r.fortBonus;
     if (territoryOf(square) === homeTerritory(owner)) v += r.homeDefense;
@@ -696,7 +709,12 @@ function resolveCombat(s: GameState, a: Extract<Action, { t: 'move' }>): boolean
   } else attackCard = drawCard(s);
   const defenseCard = drawCard(s);
   s.discard.push(attackCard, defenseCard);
-  const attackTotal = attackBase + cardValue(attackCard, s.rules);
+  let chargeCard: number | undefined;
+  if (s.rules.battleZone === 'charge' && territoryOf(a.to) === 1) {
+    chargeCard = drawCard(s);
+    s.discard.push(chargeCard);
+  }
+  const attackTotal = attackBase + cardValue(attackCard, s.rules) + (chargeCard !== undefined ? cardValue(chargeCard, s.rules) : 0);
   const defenseTotal = defenseBase + cardValue(defenseCard, s.rules);
   let won = attackTotal > defenseTotal;
   let shielded = false;
@@ -725,6 +743,7 @@ function resolveCombat(s: GameState, a: Extract<Action, { t: 'move' }>): boolean
     defenseTotal,
     attackerWon: won,
     shielded,
+    chargeCard,
   };
   log(
     s,
@@ -911,17 +930,19 @@ export function cardValueDistribution(rules: RuleConfig): number[] {
 }
 
 /** Probability the attacker wins: P(atkBase + atkCard > defBase + defCard). */
-export function attackWinProbability(rules: RuleConfig, atkBase: number, defBase: number, atkCardValue?: number): number {
+export function attackWinProbability(rules: RuleConfig, atkBase: number, defBase: number, atkCardValue?: number, extraAttackCard = false): number {
   if (rules.combat === 'none') return 1;
   const dist = cardValueDistribution(rules);
   let wins = 0;
   let total = 0;
   const atkVals = atkCardValue !== undefined ? [atkCardValue] : dist;
+  const extras = extraAttackCard ? dist : [0];
   for (const av of atkVals)
-    for (const dv of dist) {
-      total++;
-      if (atkBase + av > defBase + dv) wins++;
-    }
+    for (const ev of extras)
+      for (const dv of dist) {
+        total++;
+        if (atkBase + av + ev > defBase + dv) wins++;
+      }
   return wins / total;
 }
 

@@ -404,3 +404,26 @@ describe('first-turn handicap', () => {
     expect(s.rolled.length).toBeGreaterThanOrEqual(2);
   });
 });
+
+describe('battle zone', () => {
+  it('gives a piece +2 on a middle square of its own color', async () => {
+    const { combatBase, isOwnColor } = await import('../src/engine');
+    const s = blank({ battleZone: 'colorGround', battleBonus: 2, supportBonus: 0 });
+    // Ivory is red: middle squares where row + col is odd.
+    expect(isOwnColor(sq(10, 1), 0)).toBe(true);
+    expect(isOwnColor(sq(10, 2), 1)).toBe(true);
+    expect(isOwnColor(sq(3, 0), 0)).toBe(false); // homelands have no battle ground
+    expect(combatBase(s, sq(10, 1), 0, 'R', false)).toBe(8);
+    expect(combatBase(s, sq(10, 2), 0, 'R', false)).toBe(6);
+  });
+
+  it('adds a charge card for attacks into the middle when configured', () => {
+    const s = blank({ battleZone: 'charge', handSize: 0 }, [1, 1]);
+    s.board[sq(0, 4)] = encode(0, 'K');
+    s.board[sq(23, 4)] = encode(1, 'K');
+    s.board[sq(10, 0)] = encode(0, 'R');
+    s.board[sq(11, 0)] = encode(1, 'P');
+    applyAction(s, legalActions(s).find((a) => a.t === 'move' && a.to === sq(11, 0))!);
+    expect(s.lastCombat?.chargeCard).toBeDefined();
+  });
+});

@@ -1,0 +1,187 @@
+{
+  "games": 600,
+  "skill": 300,
+  "baseRules": {},
+  "rows": [
+    {
+      "name": "color ground +2",
+      "rules": {
+        "battleZone": "colorGround",
+        "battleBonus": 2
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.5135135135135135,
+        "drawRate": 0.013333333333333334,
+        "avgTurns": 49.266666666666666,
+        "medianTurns": 39,
+        "capturesPerGame": 7.5633333333333335,
+        "rescuesPerGame": 2.6866666666666665,
+        "rewardsPerGame": 2.4466666666666668,
+        "combatsPerGame": 9.383333333333333,
+        "upsetRate": 0.08348134991119005,
+        "cardDecidedRate": 0.24227353463587922,
+        "attackerWinRate": 0.8060390763765541,
+        "comebackRate": 0.42905405405405406,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.156666666666666,
+        "throneWinShare": 0.11824324324324324,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 592
+        }
+      },
+      "skillEdge": 0.7866666666666666,
+      "health": {
+        "score": 96.3,
+        "parts": {
+          "balance": 0.945945945945946,
+          "decisive": 0.96,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.8063063063063064,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "no battle-zone rule (current)",
+      "rules": {},
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.5150501672240803,
+        "drawRate": 0.0033333333333333335,
+        "avgTurns": 45.29,
+        "medianTurns": 38,
+        "capturesPerGame": 7.6466666666666665,
+        "rescuesPerGame": 3.1066666666666665,
+        "rewardsPerGame": 2.7,
+        "combatsPerGame": 9.813333333333333,
+        "upsetRate": 0.09646739130434782,
+        "cardDecidedRate": 0.25883152173913043,
+        "attackerWinRate": 0.7792119565217391,
+        "comebackRate": 0.45819397993311034,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.403333333333334,
+        "throneWinShare": 0.14381270903010032,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 598
+        }
+      },
+      "skillEdge": 0.8033333333333333,
+      "health": {
+        "score": 94.6,
+        "parts": {
+          "balance": 0.939799331103679,
+          "decisive": 0.99,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.6120401337792645,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "color ground +1",
+      "rules": {
+        "battleZone": "colorGround",
+        "battleBonus": 1
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.5135135135135135,
+        "drawRate": 0.013333333333333334,
+        "avgTurns": 48.82,
+        "medianTurns": 39,
+        "capturesPerGame": 7.276666666666666,
+        "rescuesPerGame": 2.8733333333333335,
+        "rewardsPerGame": 2.39,
+        "combatsPerGame": 9.183333333333334,
+        "upsetRate": 0.09945553539019963,
+        "cardDecidedRate": 0.2482758620689655,
+        "attackerWinRate": 0.7923774954627949,
+        "comebackRate": 0.42905405405405406,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.31,
+        "throneWinShare": 0.10810810810810811,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 592
+        }
+      },
+      "skillEdge": 0.7066666666666667,
+      "health": {
+        "score": 93.3,
+        "parts": {
+          "balance": 0.945945945945946,
+          "decisive": 0.96,
+          "length": 1,
+          "skill": 0.8555555555555555,
+          "comebacks": 0.8063063063063064,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "charge: attacker adds a card in the middle",
+      "rules": {
+        "battleZone": "charge"
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.4916387959866221,
+        "drawRate": 0.0033333333333333335,
+        "avgTurns": 47.413333333333334,
+        "medianTurns": 39,
+        "capturesPerGame": 8.3,
+        "rescuesPerGame": 3.6366666666666667,
+        "rewardsPerGame": 2.783333333333333,
+        "combatsPerGame": 10.433333333333334,
+        "upsetRate": 0.09840255591054313,
+        "cardDecidedRate": 0.27827476038338655,
+        "attackerWinRate": 0.7955271565495208,
+        "comebackRate": 0.4916387959866221,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.496666666666666,
+        "throneWinShare": 0.14381270903010032,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 598
+        }
+      },
+      "skillEdge": 0.7666666666666667,
+      "health": {
+        "score": 92.9,
+        "parts": {
+          "balance": 0.9665551839464883,
+          "decisive": 0.99,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0.38907469342251955,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    }
+  ]
+}

@@ -13,7 +13,7 @@ import { DEFAULT_RULES, type RuleConfig } from '../src/engine';
 import { PERSONALITIES } from '../src/ai/agents';
 import { runJobs, pairedJobs, type TaggedResult } from './runner';
 import { summarize, health, type Summary } from './match';
-import { VARIANTS, CANDIDATES, QUESTS } from './variants';
+import { VARIANTS, CANDIDATES, QUESTS, BATTLE } from './variants';
 
 const args = process.argv.slice(2);
 const cmd = args[0] ?? 'batch';
@@ -78,7 +78,7 @@ async function sweep() {
   const base = opt('base', '');
   const baseRules: Partial<RuleConfig> = base ? JSON.parse(base) : {};
   const set = opt('set', 'variants');
-  const variants = set === 'candidates' ? CANDIDATES() : set === 'quests' ? QUESTS() : VARIANTS(baseRules);
+  const variants = set === 'candidates' ? CANDIDATES() : set === 'quests' ? QUESTS() : set === 'battle' ? BATTLE() : VARIANTS(baseRules);
   const rows: Row[] = [];
   const t0 = Date.now();
   for (const [name, overrides] of Object.entries(variants)) {

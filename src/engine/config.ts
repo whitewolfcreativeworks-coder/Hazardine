@@ -35,6 +35,13 @@ export interface RuleConfig {
   /** Bonus per adjacent friendly piece (both sides), capped at supportCap pieces. */
   supportBonus: number;
   supportCap: number;
+  /**
+   * What makes the middle board a battle zone. 'colorGround': Ivory's color is red and Ebony's is
+   * black (matching their checkers); a piece fighting from a middle square of its own color gets
+   * battleBonus. 'charge': an attacker fighting in the middle adds a second blind card.
+   */
+  battleZone: 'none' | 'colorGround' | 'charge';
+  battleBonus: number;
   /** Bonus to a defender standing in its own homeland. */
   homeDefense: number;
 
@@ -98,6 +105,8 @@ export const DEFAULT_RULES: RuleConfig = {
   attackerLoss: 'repelled',
   supportBonus: 0,
   supportCap: 2,
+  battleZone: 'colorGround',
+  battleBonus: 2,
   homeDefense: 1,
   captureMode: 'jail',
   rescueMinDie: 6,

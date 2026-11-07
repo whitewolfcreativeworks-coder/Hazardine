@@ -10,6 +10,7 @@ import {
   territoryOf,
   throneOf,
   questRooms,
+  isOwnColor,
   cardLabel,
   cardValue,
   isRed,
@@ -95,6 +96,8 @@ function renderBoard() {
     const dark = (rowOf(i) + colOf(i)) % 2 === 0;
     cell.className = `sq ${terr === 1 ? (dark ? 'mid-dark' : 'mid-light') : dark ? 'home-dark' : 'home-light'}`;
     if (thrones.includes(i)) cell.classList.add('throne');
+    if (rowOf(i) === 8) cell.classList.add('zone-start');
+    if (rowOf(i) === 15) cell.classList.add('zone-end');
     if (focus.territory != null && terr !== focus.territory) cell.classList.add('dimmed');
     if (spot.has(i)) cell.classList.add('spot');
     if (tgt.has(i)) cell.classList.add('target');
@@ -138,6 +141,16 @@ function cardHtml(c: number, cls = '') {
   return `<span class="card ${isRed(c) ? 'red' : 'black'} ${cls}"><b>${cardLabel(c)}</b><small>+${cardValue(c, current.rules)}</small></span>`;
 }
 
+function groundNote(from: number, attacker: Player, to: number) {
+  if (current.rules.battleZone !== 'colorGround') return '';
+  const b = current.rules.battleBonus;
+  const parts: string[] = [];
+  if (isOwnColor(from, attacker)) parts.push(`${SIDE[attacker]} on ${attacker === 0 ? 'red' : 'black'} +${b}`);
+  const d = (1 - attacker) as Player;
+  if (isOwnColor(to, d)) parts.push(`${SIDE[d]} on ${d === 0 ? 'red' : 'black'} +${b}`);
+  return parts.length ? ` <span class="ground-note">${parts.join(', ')}</span>` : '';
+}
+
 function renderPanels() {
   const s = current;
   const p = s.toMove;
@@ -163,7 +176,7 @@ function renderPanels() {
     mid.innerHTML =
       row(lc.attacker, lc.attackerKind, lc.attackBase, lc.attackCard, lc.attackTotal) +
       row((1 - lc.attacker) as Player, lc.defenderKind, lc.defenseBase, lc.defenseCard, lc.defenseTotal) +
-      `<p class="verdict">${lc.attackerWon ? (lc.defenderKind === 'K' ? 'The king falls.' : `${KIND_NAME[lc.defenderKind]} captured.`) : 'Attack repelled.'}</p>`;
+      `<p class="verdict">${lc.attackerWon ? (lc.defenderKind === 'K' ? 'The king falls.' : `${KIND_NAME[lc.defenderKind]} captured.`) : 'Attack repelled.'}${groundNote(lc.from, lc.attacker, lc.to)}</p>`;
   } else if (lt) {
     mid.className = 'panel panel-mid fight';
     mid.innerHTML = `<div class="combat-row"><span class="glyph side-${lt.player}">${GLYPH[lt.kind]}</span><span>${lt.strength}</span><span>+</span>${cardHtml(lt.card)}<span>=</span><strong>${lt.total}</strong><span class="needs">needs ${lt.target}</span></div><p class="verdict">${lt.passed ? `Room cleared: ${lt.boon}.` : 'The dungeon takes the piece.'}</p>`;
@@ -184,7 +197,7 @@ function renderPanels() {
         s.rules.quest !== 'off'
           ? `<div class="camp-line"><span class="camp-title">Quest</span><span class="camp-list">${['Ford', 'Crypt', 'Vault'].map((n, i) => `<span class="step${i < s.questStage[q] ? ' done' : i === s.questStage[q] ? ' next' : ''}">${n}</span>`).join('')}</span></div>`
           : '';
-      return `<div class="camp"><h3><span class="glyph side-${q}">♚</span> ${SIDE[q]}</h3>${quest}<div class="camp-line"><span class="camp-title">In jail</span><span class="camp-list">${jail}</span></div><div class="camp-line"><span class="camp-title">Earned</span><span class="camp-list">${ready}</span></div></div>`;
+      return `<div class="camp"><h3><span class="glyph side-${q}">♚</span> ${SIDE[q]} <span class="army-color color-${q}">${q === 0 ? 'red' : 'black'}</span></h3>${quest}<div class="camp-line"><span class="camp-title">In jail</span><span class="camp-list">${jail}</span></div><div class="camp-line"><span class="camp-title">Earned</span><span class="camp-list">${ready}</span></div></div>`;
     })
     .join('');
 }
@@ -269,7 +282,7 @@ const stage: Stage = {
         await flyGlyph(GLYPH[piece.kind], piece.owner, a.from, a.to, 0.55, 420);
         applyAction(s, a);
         render();
-        cellEl(a.to).classList.add('flash');
+        cellEl(a.to).classList.add(territoryOf(a.to) === 1 ? 'clash' : 'flash');
         await wait(1300);
       } else {
         await flyGlyph(GLYPH[piece.kind], piece.owner, a.from, a.to);

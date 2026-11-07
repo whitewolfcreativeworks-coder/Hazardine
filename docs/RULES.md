@@ -9,7 +9,7 @@ Two chessboards and one checkerboard laid end to end (8 × 24 squares), pieces f
 ## The field
 
 - **Rows 1-8:** Ivory's homeland (chessboard).
-- **Rows 9-16:** the contested middle (red-and-black checkerboard).
+- **Rows 9-16:** the battle zone (red-and-black checkerboard).
 - **Rows 17-24:** Ebony's homeland (chessboard).
 
 Each king starts on its **throne**: the e-file square of its back row.
@@ -38,6 +38,7 @@ Ivory moves first, but rolls only **one die** on the opening turn (this offsets 
 **Attack.** Move onto an enemy piece to fight it:
 
 - Each side's strength: pawn 2, knight 4, bishop 4, rook 6, queen 9, king 5.
+- **Battle ground:** Ivory's color is red and Ebony's is black, matching their checkers. In the battle zone, a piece fighting from a square of its own color adds +2, attacking or defending.
 - The defender adds +1 in its own homeland and +2 if it stands next to one of its own barricades.
 - The attacker plays a card from its hand (then draws a replacement); the defender draws one blind from the deck.
 - Card values: 2-4 = +1, 5-7 = +2, 8-10 = +3, J-Q = +4, K-A = +5.
@@ -45,7 +46,7 @@ Ivory moves first, but rolls only **one die** on the opening turn (this offsets 
 
 **Rescue.** Spend a **6** to return one of your jailed pieces to any empty square on your back two rows.
 
-**Barricade.** Spend any die to place one of your checkers on an empty square next to one of your pieces, in your homeland or the middle. Barricades block movement for both sides. An enemy piece next to a barricade can knock it down with a die of 4 or more.
+**Barricade.** Ivory's checkers are red, Ebony's are black. Spend any die to place one of your checkers on an empty square next to one of your pieces, in your homeland or the middle. Barricades block movement for both sides. An enemy piece next to a barricade can knock it down with a die of 4 or more.
 
 **Deploy.** Spend any die to place an earned reinforcement on an empty square in your back two rows.
 
@@ -81,6 +82,7 @@ If 300 player-turns pass without a winner, the game is a draw (this has not happ
 | Reward zone | enemy homeland, far back row | enemy homeland | Back row makes rewards rare |
 | Barricades | 0, 4 | 4 | Small effect; gives checkers a job |
 | Victory | king, king or throne | king or throne | Second path adds tension at little cost |
+| Battle zone | nothing special, own-color ground +1 or +2, attacker charge card | own-color ground +2 | Gives the middle and the checker colors a meaning; balance and skill unchanged |
 
 ## Optional: Quest mode
 

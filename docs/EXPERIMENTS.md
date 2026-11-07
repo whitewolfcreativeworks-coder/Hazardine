@@ -51,6 +51,19 @@ What the simulation lab has found so far. Raw tables are in [results/](results/)
 
 Throne rushers (73%) and aggressive players (72%) lead, balanced play is close (67%), and defensive turtling (18%) and pawn-pushing for rewards (2%) lose badly. No single strategy dominates, but the throne is a strong target. Watch for this in playtests; if rushing feels oppressive, the throne victory could need a condition such as holding it for a full turn.
 
+## Battle zone (600 games each, 300 skill games)
+
+[Table](results/sweep-roundbattle.md). Playtest feedback: the middle board felt no different from the homelands, and the red and black checkers had no meaning. Tested one-rule fixes on top of A1:
+
+| Variant | Health | First-player wins | Avg turns | Skill edge |
+|---|---|---|---|---|
+| **Own-color ground +2** | **96.3** | 51% | 49 | 79% |
+| No battle-zone rule | 94.6 | 52% | 45 | 80% |
+| Own-color ground +1 | 93.3 | 51% | 49 | 71% |
+| Attacker charge card in the middle | 92.9 | 49% | 47 | 77% |
+
+All four are balanced. The +1 skill edge looked low, so it was rechecked with 600 games each: +1, +2 and no rule all scored about 78%, so that dip was noise. **Adopted: own-color ground +2.** It is one rule, it ties the checker colors to the board, and it makes every square in the middle a choice without hurting balance or skill.
+
 ## Quest mode ("two dungeons") (400 games each, 200 skill games)
 
 [Table](results/sweep-roundquests.md). Each side clears three mirrored rooms with card trials (see RULES.md).

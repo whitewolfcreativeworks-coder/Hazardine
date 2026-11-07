@@ -38,6 +38,7 @@ import {
   isQuestRoom,
   trialTarget,
   trialPassProbability,
+  isOwnColor,
 } from '../engine';
 
 export interface Agent {
@@ -116,7 +117,10 @@ export function evaluate(s: GameState, p: Player, w: Weights): number {
     if (kind !== 'K') {
       t += w.material * str[kind];
       t += (kind === 'P' ? w.pawnAdvance : w.advance) * prog;
-      if (territoryOf(i) === 1) t += w.middle;
+      if (territoryOf(i) === 1) {
+        t += w.middle;
+        if (s.rules.battleZone === 'colorGround' && isOwnColor(i, owner)) t += 0.5 * s.rules.battleBonus;
+      }
       const enemy = (1 - owner) as Player;
       const dThrone = dist(i, throne[enemy]);
       if (dThrone <= 6) t += w.thronePressure * (7 - dThrone) * 0.5;
@@ -180,7 +184,8 @@ export function scoreAction(s: GameState, a: Action, w: Weights): number {
     const ab = combatBase(s, a.from, p, att.kind, false);
     const db = combatBase(s, a.to, def.owner, def.kind, true);
     const handCard = a.card !== undefined ? s.hands[p][a.card] : undefined;
-    const prob = attackWinProbability(s.rules, ab, db, handCard !== undefined ? cardValue(handCard, s.rules) : undefined);
+    const charge = s.rules.battleZone === 'charge' && territoryOf(a.to) === 1;
+    const prob = attackWinProbability(s.rules, ab, db, handCard !== undefined ? cardValue(handCard, s.rules) : undefined, charge);
     // Win branch: capture without combat.
     const win = cloneState(s);
     forceMove(win, a, true);

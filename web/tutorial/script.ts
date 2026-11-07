@@ -22,7 +22,7 @@ import {
 export const LINES: Record<string, string> = {
   intro1: "Welcome to Hazardine. In the next few minutes I'll teach you the whole game, on a real board.",
   board1: "The battlefield is three boards laid end to end. On the left is Ivory's homeland, a chessboard.",
-  board2: 'In the middle is the contested ground, a red and black checkerboard. Most of the fighting happens here.',
+  board2: 'In the middle is the battle zone, a red and black checkerboard. Most of the fighting happens here.',
   board3: "On the right is Ebony's homeland, another chessboard.",
   board4: 'Each king starts on its throne, marked with a gold ring. You win by capturing the enemy king, or by moving any piece onto the enemy throne.',
 
@@ -47,6 +47,10 @@ export const LINES: Record<string, string> = {
   fight7: 'Defenders get one extra point in their own homeland, and two next to their own barricade. Ties always go to the defender.',
   fight8: 'Here, a lone pawn gambles an ace against a bishop at home. Seven against eight. The attack is repelled, and the pawn simply stays where it was.',
 
+  zone1: "The red and black middle board is the battle zone. Red is Ivory's color, the same as its checkers. Black is Ebony's.",
+  zone2: 'In the battle zone, a piece fighting from a square of its own color gets two extra points, attacking or defending. Pick your ground before you strike.',
+  zone3: "Ivory's rook stands on red, so it attacks at eight. Ebony's bishop stands on black, so it defends at six. The cards add the rest, and the rook wins.",
+
   jail1: "Captured pieces aren't gone. They go to jail.",
   jail2: 'Roll a six, and you can spend it to bring a prisoner home to your back two rows.',
   jail3: "Rescue costs your best roll, so it's always a choice: free a prisoner, or press the attack.",
@@ -56,7 +60,7 @@ export const LINES: Record<string, string> = {
   cross3: 'Spend any die to deploy it on your back two rows.',
   cross4: 'Your supply is limited to two chess sets, so nobody can build an endless army.',
 
-  bar1: 'Your checkers are barricades. Each side has four.',
+  bar1: 'Your checkers are barricades. Ivory places the four red checkers, and Ebony the four black.',
   bar2: 'Spend any die to place one next to your own piece, in your homeland or the middle.',
   bar3: 'Barricades block movement for everyone, and a defender standing beside its own barricade fights with two extra points.',
   bar4: 'An enemy piece next to a barricade can knock it down with a four or higher.',
@@ -134,8 +138,15 @@ function put(s: GameState, p: Player, k: Kind, r: number, c: number, veteran = f
   s.board[sq(r, c)] = encode(p, k, veteran);
 }
 
+/** Every middle square of a player's color (their battle ground). */
+function groundOf(p: Player): number[] {
+  const out: number[] = [];
+  for (let r = 8; r < 16; r++) for (let c = 0; c < 8; c++) if ((r + c) % 2 === (p === 0 ? 1 : 0)) out.push(sq(r, c));
+  return out;
+}
+
 /** Card ids: suit * 13 + rank index (0 = 2 ... 12 = Ace). Suits: spades, hearts, diamonds, clubs. */
-const CARD = { KH: 1 * 13 + 11, SEVEN_C: 3 * 13 + 5, AD: 2 * 13 + 12, EIGHT_S: 0 * 13 + 6, AS: 0 * 13 + 12, TWO_C: 3 * 13 + 0, QH: 1 * 13 + 10, NINE_C: 3 * 13 + 7, FOUR_D: 2 * 13 + 2 };
+const CARD = { FIVE_D: 2 * 13 + 3, KH: 1 * 13 + 11, SEVEN_C: 3 * 13 + 5, AD: 2 * 13 + 12, EIGHT_S: 0 * 13 + 6, AS: 0 * 13 + 12, TWO_C: 3 * 13 + 0, QH: 1 * 13 + 10, NINE_C: 3 * 13 + 7, FOUR_D: 2 * 13 + 2 };
 
 /** Stack the deck for an attack: the attacker refills its hand first, then the defender draws blind. */
 function stack(s: GameState, defenderCard: number) {
@@ -276,6 +287,29 @@ export const CHAPTERS: Chapter[] = [
       await st.wait(1800);
       await st.play(t, find(t, moveTo(sq(16, 2), sq(17, 3), (a) => a.card === 0)));
       st.focus({});
+      await say;
+    },
+  },
+  {
+    id: 'zone',
+    title: 'The battle zone',
+    async run(st) {
+      const s = fresh([1, 3]);
+      put(s, 0, 'R', 10, 1);
+      put(s, 1, 'B', 11, 1);
+      put(s, 0, 'N', 4, 2);
+      put(s, 1, 'P', 20, 5);
+      s.hands[0] = [CARD.NINE_C, CARD.TWO_C, CARD.FOUR_D];
+      st.show(s);
+      st.focus({ territory: 1 });
+      await st.say('zone1');
+      st.focus({ territory: 1, squares: groundOf(0) });
+      await st.say('zone2');
+      st.focus({ squares: [sq(10, 1)], attacks: [sq(11, 1)] });
+      stack(s, CARD.FIVE_D);
+      const say = st.say('zone3');
+      await st.wait(4200);
+      await st.play(s, find(s, moveTo(sq(10, 1), sq(11, 1), (a) => a.card === 0)));
       await say;
     },
   },
