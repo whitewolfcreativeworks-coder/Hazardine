@@ -42,7 +42,7 @@ with tempfile.TemporaryDirectory() as tmp:
     for path, _ in clips:
         inputs += ['-i', path]
     delays = ''.join(f'[{i + 1}:a]adelay={d}|{d}[a{i}];' for i, (_, d) in enumerate(clips))
-    mix = ''.join(f'[a{i}]' for i in range(len(clips))) + f'amix=inputs={len(clips)}:normalize=0,volume=1.6[aout]'
+    mix = ''.join(f'[a{i}]' for i in range(len(clips))) + f'amix=inputs={len(clips)}:normalize=0,volume=1.0,alimiter=limit=0.9[aout]'
     subprocess.run(
         ['ffmpeg', '-v', 'error', '-y', *inputs, '-filter_complex', delays + mix, '-map', '0:v', '-map', '[aout]',
          '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-r', '30',
