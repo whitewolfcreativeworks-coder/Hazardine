@@ -4,11 +4,12 @@
   "description": "Hazardine: a three-board strategy game of chess pieces, dice, cards and capture-and-rescue, with rules shaped by simulation.",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build -c vite.tutorial.config.ts",
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "sim": "tsx sim/cli.ts"
+    "sim": "tsx sim/cli.ts",
+    "tutorial": "vite -c vite.tutorial.config.ts"
   },
   "repository": {
     "type": "git",

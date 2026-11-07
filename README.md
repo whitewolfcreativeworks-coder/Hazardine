@@ -12,6 +12,8 @@ npm run dev      # opens the game at http://localhost:5173
 npm run build    # builds a single self-contained file: dist/index.html
 ```
 
+A narrated, chapter-by-chapter tutorial lives at `dist/tutorial/index.html` after building (`npm run tutorial` to work on it). Its narration is generated offline with Piper (`tools/narrate.py`), and `tools/record_tutorial.py` records it to an MP4.
+
 The game runs in any modern browser and works with touch on iPad and phones. You can play against the computer, pass-and-play with a friend, or watch two computers play. The **How to play** button explains the rules currently in force.
 
 Once GitHub Pages is switched on (Settings → Pages → Source: GitHub Actions), every push to `main` publishes the game automatically.
