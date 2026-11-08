@@ -13,7 +13,7 @@ import { DEFAULT_RULES, type RuleConfig } from '../src/engine';
 import { PERSONALITIES } from '../src/ai/agents';
 import { runJobs, pairedJobs, type TaggedResult } from './runner';
 import { summarize, health, type Summary } from './match';
-import { VARIANTS, CANDIDATES, QUESTS, BATTLE, MUSTER, ORDER } from './variants';
+import { VARIANTS, CANDIDATES, QUESTS, BATTLE, MUSTER, ORDER, CHECKERS } from './variants';
 
 const args = process.argv.slice(2);
 const cmd = args[0] ?? 'batch';
@@ -78,7 +78,7 @@ async function sweep() {
   const base = opt('base', '');
   const baseRules: Partial<RuleConfig> = base ? JSON.parse(base) : {};
   const set = opt('set', 'variants');
-  const variants = set === 'candidates' ? CANDIDATES() : set === 'quests' ? QUESTS() : set === 'battle' ? BATTLE() : set === 'muster' ? MUSTER() : set === 'order' ? ORDER() : VARIANTS(baseRules);
+  const variants = set === 'candidates' ? CANDIDATES() : set === 'quests' ? QUESTS() : set === 'battle' ? BATTLE() : set === 'muster' ? MUSTER() : set === 'order' ? ORDER() : set === 'checkers' ? CHECKERS() : VARIANTS(baseRules);
   const rows: Row[] = [];
   const t0 = Date.now();
   for (const [name, overrides] of Object.entries(variants)) {
@@ -89,7 +89,7 @@ async function sweep() {
   }
   rows.sort((a, b) => b.health.score - a.health.score);
   writeFileSync(new URL(`sweep-round${round}.json`, OUT), JSON.stringify({ games, skill, baseRules, rows }, null, 2));
-  writeFileSync(new URL(`sweep-round${round}.md`, OUT), `# Sweep round ${round}\n\nSelf-play: ${games} games per variant (heuristic vs heuristic, seats alternated). Skill edge: ${skill} games, a careful heuristic player vs a blundering one (same judgement, heavy noise); higher means better play wins more often, i.e. less luck.\n\n${table(rows)}\n${set === 'quests' ? '\n## Quest detail\n\n' + questTable(rows) + '\n' : ''}${set === 'muster' || set === 'order' ? '\n## Musters per game\n\n' + rows.map((r) => `- ${r.name}: ${f1(r.summary.mustersPerGame)}`).join('\n') + '\n' : ''}`);
+  writeFileSync(new URL(`sweep-round${round}.md`, OUT), `# Sweep round ${round}\n\nSelf-play: ${games} games per variant (heuristic vs heuristic, seats alternated). Skill edge: ${skill} games, a careful heuristic player vs a blundering one (same judgement, heavy noise); higher means better play wins more often, i.e. less luck.\n\n${table(rows)}\n${set === 'quests' ? '\n## Quest detail\n\n' + questTable(rows) + '\n' : ''}${set === 'checkers' ? '\n## Checker detail\n\n' + rows.map((r) => `- ${r.name}: ${f1(r.summary.barricadesPerGame)} placed, ${f1(r.summary.takeoversPerGame)} taken over per game`).join('\n') + '\n' : ''}${set === 'muster' || set === 'order' ? '\n## Musters per game\n\n' + rows.map((r) => `- ${r.name}: ${f1(r.summary.mustersPerGame)}`).join('\n') + '\n' : ''}`);
   console.log('\n' + table(rows));
 }
 

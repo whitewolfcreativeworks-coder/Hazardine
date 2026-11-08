@@ -92,6 +92,7 @@ export interface Stats {
   promotions: [number, number];
   reinforcements: [number, number];
   barricadesPlaced: [number, number];
+  takeovers: [number, number];
   combats: number;
   attackerWins: number;
   /** Combats won by the side whose strength before cards was lower. */
@@ -129,6 +130,8 @@ export interface GameState {
   /** Unused pieces in each player's supply (from the four chess sets). */
   reserve: [Record<Kind, number>, Record<Kind, number>];
   barricadeStock: [number, number];
+  /** Checkers of each color stacked on each square: index owner * SQUARES + square. */
+  checkerStack: Int8Array;
   deck: number[];
   discard: number[];
   hands: [number[], number[]];
@@ -163,6 +166,7 @@ export type Action =
   | { t: 'move'; from: number; to: number; dice: number[]; card?: number; reward?: Kind; rewardType?: 'promote' | 'reinforce' }
   | { t: 'demolish'; from: number; to: number; dice: number[] }
   | { t: 'barricade'; to: number; dice: number[] }
+  | { t: 'takeover'; from: number; to: number; dice: number[] }
   | { t: 'rescue'; kind: Kind; to: number; dice: number[] }
   | { t: 'deploy'; kind: Kind; to: number; dice: number[] }
   | { t: 'muster'; kind: Kind; to: number }
@@ -251,6 +255,7 @@ export function createGame(seed: number, rulesIn?: Partial<RuleConfig> | RuleCon
     ready: [[], []],
     reserve: [fullSupply(), fullSupply()],
     barricadeStock: [rules.barricades, rules.barricades],
+    checkerStack: new Int8Array(SQUARES * 2),
     deck: [],
     discard: [],
     hands: [[], []],
@@ -264,6 +269,7 @@ export function createGame(seed: number, rulesIn?: Partial<RuleConfig> | RuleCon
       promotions: [0, 0],
       reinforcements: [0, 0],
       barricadesPlaced: [0, 0],
+      takeovers: [0, 0],
       combats: 0,
       attackerWins: 0,
       upsets: 0,
@@ -332,6 +338,7 @@ export function cloneState(s: GameState): GameState {
     ready: [s.ready[0].slice(), s.ready[1].slice()],
     reserve: [{ ...s.reserve[0] }, { ...s.reserve[1] }],
     barricadeStock: [s.barricadeStock[0], s.barricadeStock[1]],
+    checkerStack: s.checkerStack.slice(),
     deck: s.deck.slice(),
     discard: s.discard.slice(),
     hands: [s.hands[0].slice(), s.hands[1].slice()],
@@ -342,6 +349,7 @@ export function cloneState(s: GameState): GameState {
       promotions: [...s.stats.promotions],
       reinforcements: [...s.stats.reinforcements],
       barricadesPlaced: [...s.stats.barricadesPlaced],
+      takeovers: [...s.stats.takeovers],
       skippedTurns: [...s.stats.skippedTurns],
       musters: [...s.stats.musters],
       actions: [...s.stats.actions],
@@ -577,6 +585,18 @@ export function isOwnColor(square: number, owner: Player): boolean {
   return owner === 0 ? red : !red;
 }
 
+/** Barricades a player has standing on the board (stacks count once, for whoever is on top). */
+export function barricadesInPlay(s: GameState, p: Player): number {
+  let n = 0;
+  for (let i = 0; i < SQUARES; i++) if (s.barricade[i] === p) n++;
+  return n;
+}
+
+function canAddBarricade(s: GameState, p: Player): boolean {
+  if (s.barricadeStock[p] <= 0) return false;
+  return !s.rules.barricadeLimit || barricadesInPlay(s, p) < s.rules.barricadeLimit;
+}
+
 /** Strength of a unit at a square before cards: base + support + terrain bonuses. */
 export function combatBase(s: GameState, square: number, owner: Player, kind: Kind, defending: boolean): number {
   const r = s.rules;
@@ -655,13 +675,17 @@ export function legalActions(s: GameState): Action[] {
         if (s.barricade[a] === 1 - p) {
           const d = singles.filter((o) => o.v >= r.demolishMinDie).sort((x, y) => x.v - y.v)[0];
           if (d) out.push({ t: 'demolish', from, to: a, dice: d.idx });
+          if (r.barricadeTakeover && canAddBarricade(s, p) && singles.length) {
+            const low = singles.slice().sort((x, y) => x.v - y.v)[0];
+            out.push({ t: 'takeover', from, to: a, dice: low.idx });
+          }
         }
       }
     }
   }
 
   // Place a barricade: any empty square in your homeland or the middle, adjacent to one of your pieces.
-  if (s.barricadeStock[p] > 0 && singles.length) {
+  if (canAddBarricade(s, p) && singles.length) {
     const d = singles.slice().sort((x, y) => x.v - y.v)[0];
     const placed = new Set<number>();
     for (let from = 0; from < SQUARES; from++) {
@@ -879,11 +903,23 @@ export function applyAction(s: GameState, a: Action, opts: { forceTrial?: boolea
     }
     case 'demolish':
       s.barricade[a.to] = -1;
-      s.barricadeStock[1 - p]++;
+      // Every checker in the stack goes back to its owner's supply.
+      for (const q of [0, 1] as Player[]) {
+        s.barricadeStock[q] += s.checkerStack[q * SQUARES + a.to] || (q !== p ? 1 : 0);
+        s.checkerStack[q * SQUARES + a.to] = 0;
+      }
       log(s, `Barricade on ${squareName(a.to)} demolished`);
+      break;
+    case 'takeover':
+      s.barricade[a.to] = p;
+      s.checkerStack[p * SQUARES + a.to]++;
+      s.barricadeStock[p]--;
+      s.stats.takeovers[p]++;
+      log(s, `Barricade on ${squareName(a.to)} taken over`);
       break;
     case 'barricade':
       s.barricade[a.to] = p;
+      s.checkerStack[p * SQUARES + a.to] = 1;
       s.barricadeStock[p]--;
       s.stats.barricadesPlaced[p]++;
       log(s, `Barricade placed on ${squareName(a.to)}`);

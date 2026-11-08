@@ -91,3 +91,14 @@ export function ORDER(): Record<string, Partial<RuleConfig>> {
     'no muster, entering stops': { enterZone: 'stop', muster: 'off' },
   };
 }
+
+/** Checkers: supply, takeovers and how many may stand at once. */
+export function CHECKERS(): Record<string, Partial<RuleConfig>> {
+  return {
+    '4 checkers, no takeovers (current)': {},
+    '12 checkers, takeovers, 4 in play': { barricades: 12, barricadeTakeover: true, barricadeLimit: 4 },
+    '12 checkers, takeovers, 6 in play': { barricades: 12, barricadeTakeover: true, barricadeLimit: 6 },
+    '12 checkers, takeovers, no cap': { barricades: 12, barricadeTakeover: true, barricadeLimit: 0 },
+    '6 checkers, takeovers': { barricades: 6, barricadeTakeover: true, barricadeLimit: 0 },
+  };
+}

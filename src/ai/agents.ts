@@ -143,6 +143,23 @@ export function evaluate(s: GameState, p: Player, w: Weights): number {
       for (let i = 0; i < SQUARES; i++) if (s.barricade[i] === q && dist(i, kings[q]) <= 2) t += w.barricade * 2;
     }
     t += w.barricade * 0.3 * s.barricadeStock[q];
+    // Standing barricades that shelter your own pieces (taking one over also strips the enemy's).
+    for (let i = 0; i < SQUARES; i++) {
+      if (s.barricade[i] !== q) continue;
+      const r0 = rowOf(i);
+      const c0 = colOf(i);
+      let guards = 0;
+      for (let dr = -1; dr <= 1; dr++)
+        for (let dc = -1; dc <= 1; dc++) {
+          const r = r0 + dr;
+          const c = c0 + dc;
+          if ((dr || dc) && r >= 0 && r < 24 && c >= 0 && c < 8) {
+            const code = board[r * 8 + c];
+            if (code && (((code - 1) >> 3) & 1) === q) guards++;
+          }
+        }
+      t += w.barricade * Math.min(guards, 2) * 0.8;
+    }
     score += sign * t;
   }
   // Quest progress: rooms cleared, shields, and how close the nearest piece is to the next room.

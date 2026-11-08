@@ -14,6 +14,7 @@ import {
   isRed,
   squareName,
   isOwnColor,
+  barricadesInPlay,
   questRooms,
   QUEST_ROOM_NAMES,
   SQUARES,
@@ -97,7 +98,7 @@ function actionsForPick(): Map<number, Action[]> {
   if (!isHumanTurn()) return out;
   const add = (to: number, a: Action) => out.set(to, [...(out.get(to) ?? []), a]);
   for (const a of legalActions(game)) {
-    if (pick.t === 'piece' && (a.t === 'move' || a.t === 'demolish') && a.from === pick.from) add(a.to, a);
+    if (pick.t === 'piece' && (a.t === 'move' || a.t === 'demolish' || a.t === 'takeover') && a.from === pick.from) add(a.to, a);
     if (pick.t === 'barricade' && a.t === 'barricade') add(a.to, a);
     if (pick.t === 'rescue' && a.t === 'rescue' && a.kind === pick.kind) add(a.to, a);
     if (pick.t === 'deploy' && a.t === 'deploy' && a.kind === pick.kind) add(a.to, a);
@@ -134,6 +135,10 @@ function onSquare(s: number) {
   if (targets.has(s)) {
     const opts = pickAction(targets.get(s)!);
     if (opts.length > 1 && opts.every((a) => a.t === 'move' && a.reward)) return chooseReward(opts as Extract<Action, { t: 'move' }>[]);
+    const all = targets.get(s)!;
+    const over = all.find((a) => a.t === 'takeover');
+    const down = all.find((a) => a.t === 'demolish');
+    if (over && down) return chooseBarricade(over, down);
     return take(opts[0]);
   }
   const piece = decode(game.board[s]);
@@ -143,7 +148,30 @@ function onSquare(s: number) {
   render();
 }
 
+function chooseBarricade(over: Action, down: Action) {
+  const box = $('reward-options');
+  box.innerHTML = '';
+  ($('dlg-reward').querySelector('h2') as HTMLElement).textContent = 'Enemy barricade';
+  ($('dlg-reward').querySelector('p') as HTMLElement).textContent = 'Take it over with one of your checkers, or knock it down.';
+  const opt = (label: string, a: Action) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'reward';
+    b.textContent = label;
+    b.onclick = () => {
+      ($('dlg-reward') as HTMLDialogElement).close();
+      take(a);
+    };
+    box.append(b);
+  };
+  opt('Take it over (any die, uses one of your checkers)', over);
+  opt(`Knock it down (a ${game.rules.demolishMinDie} or higher)`, down);
+  ($('dlg-reward') as HTMLDialogElement).showModal();
+}
+
 function chooseReward(opts: Extract<Action, { t: 'move' }>[]) {
+  ($('dlg-reward').querySelector('h2') as HTMLElement).textContent = 'Your pawn crossed into enemy land';
+  ($('dlg-reward').querySelector('p') as HTMLElement).textContent = 'Choose its reward.';
   const box = $('reward-options');
   box.innerHTML = '';
   for (const a of opts) {
@@ -266,6 +294,8 @@ function renderBoard() {
     if (game.barricade[s] !== -1) {
       const d = document.createElement('span');
       d.className = `barricade side-${game.barricade[s]}`;
+      const height = game.checkerStack[s] + game.checkerStack[SQUARES + s];
+      if (height > 1) d.dataset.stack = String(height);
       cell.append(d);
       label += `, ${SIDE[game.barricade[s]]} barricade`;
     }
@@ -278,7 +308,7 @@ function renderBoard() {
     }
     if (targets.has(s)) {
       const a = targets.get(s)![0];
-      const attack = (a.t === 'move' && !!game.board[s]) || a.t === 'demolish';
+      const attack = (a.t === 'move' && !!game.board[s]) || a.t === 'demolish' || a.t === 'takeover';
       cell.classList.add(attack ? 'target-attack' : 'target');
     }
     cell.setAttribute('aria-label', label);
@@ -453,7 +483,9 @@ function renderTray() {
     line('Earned', game.ready[q], 'deploy', 'none');
     const bar = document.createElement('div');
     bar.className = 'camp-line';
-    bar.innerHTML = `<span class="camp-title">Barricades</span><span class="camp-list">${`<span class="barricade small side-${q}"></span>`.repeat(game.barricadeStock[q]) || '<span class="muted">none left</span>'}</span>`;
+    const standing = barricadesInPlay(game, q);
+    const cap = game.rules.barricadeLimit ? ` of ${game.rules.barricadeLimit}` : '';
+    bar.innerHTML = `<span class="camp-title">Checkers</span><span class="camp-list">${game.barricadeStock[q]} in hand, ${standing}${cap} standing</span>`;
     camp.append(bar);
   }
 
@@ -515,7 +547,7 @@ function rulesHtml(r: RuleConfig) {
   ${r.combat === 'cards' ? `<p><strong>Cards at the table.</strong> One shared deck sits face down, with a face-up discard pile beside it. To attack, lay your chosen card face down; the defender turns over the top card of the deck; then reveal. Both cards go on the discard pile and the attacker draws back up to ${r.handSize}. When the deck runs out, shuffle the discard pile into a new deck.</p>` : ''}
   ${r.captureMode === 'jail' ? `<p><strong>Jail.</strong> Captured pieces go to jail. Spend a die of ${r.rescueMinDie} or more to bring one back to your home rows.</p>` : ''}
   ${r.promotionMode !== 'none' ? `<p><strong>Crossing.</strong> A pawn that reaches ${r.promotionZone === 'enemyHome' ? 'the enemy homeland' : 'the far edge'} ${r.promotionMode === 'reinforce' ? 'earns a new piece. Spend any die to deploy it on your home rows.' : r.promotionMode === 'promote' ? 'becomes a stronger piece.' : 'either becomes a stronger piece or earns one at home.'}</p>` : ''}
-  ${r.barricades ? `<p><strong>Barricades.</strong> Spend a die to place one of your ${r.barricades} checkers (Ivory red, Ebony black) next to your pieces (not in enemy land). They block movement. An adjacent enemy can knock one down with a ${r.demolishMinDie} or higher.</p>` : ''}
+  ${r.barricades ? `<p><strong>Barricades.</strong> Spend a die to place one of your ${r.barricades} checkers (Ivory red, Ebony black) next to your pieces (not in enemy land).${r.barricadeLimit ? ` At most ${r.barricadeLimit} of yours may stand at once.` : ''} They block movement, and a defender beside its own barricade gets +${r.fortBonus}. An adjacent enemy can knock one down with a ${r.demolishMinDie} or higher; its checkers go back to their owners.${r.barricadeTakeover ? ' Or, with any die, stack one of your checkers on an enemy barricade next to your piece to take it over.' : ''}</p>` : ''}
   ${
     r.quest !== 'off'
       ? `<p><strong>Quest.</strong> Each side has three rooms (Ford, Crypt, Vault), marked on the board by its colour. When one of your pieces (not the king) ends a move on your next room, draw a card: strength + card must reach ${r.questDifficulty.join(', ')} for the three rooms. Pass and gain a boon: a new piece, then a shield, then ${r.quest === 'win' ? 'victory' : 'a queen and a freed prisoner'}. Fail and the piece goes to jail.${r.questLink ? ` Each room your rival clears makes your next trial ${r.questLink} easier.` : ''} <a href="quest-sheet.html" target="_blank" rel="noopener">Printable quest sheet</a>.</p>`

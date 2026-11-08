@@ -70,6 +70,10 @@ export interface RuleConfig {
 
   /** Checker pieces used as barricades: how many each player may place (0 disables). */
   barricades: number;
+  /** Most of your barricades that may stand on the board at once (0 = no limit beyond your supply). */
+  barricadeLimit: number;
+  /** Stack one of your checkers on an adjacent enemy barricade to take it over. */
+  barricadeTakeover: boolean;
   /** Bonus to a defender standing next to its own barricade. */
   fortBonus: number;
   /** Minimum die value to demolish an adjacent enemy barricade. */
@@ -129,6 +133,8 @@ export const DEFAULT_RULES: RuleConfig = {
   promotionZone: 'enemyHome',
   promotionMode: 'reinforce',
   barricades: 4,
+  barricadeLimit: 0,
+  barricadeTakeover: false,
   fortBonus: 2,
   demolishMinDie: 4,
   victory: 'kingOrThrone',

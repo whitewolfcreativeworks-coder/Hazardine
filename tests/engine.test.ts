@@ -503,3 +503,43 @@ describe('entering the battle zone', () => {
     expect(legalActions(s).some((a) => a.t === 'move' && a.from === sq(8, 2))).toBe(false);
   });
 });
+
+describe('checker takeovers', () => {
+  const setup = (rules: Parameters<typeof makeRules>[0], dice = [2, 3]) => {
+    const s = blank({ barricadeTakeover: true, barricades: 12, ...rules }, dice);
+    s.board[sq(0, 4)] = encode(0, 'K');
+    s.board[sq(23, 4)] = encode(1, 'K');
+    return s;
+  };
+
+  it('stacks your checker on an adjacent enemy barricade to take it over', () => {
+    const s = setup({});
+    s.board[sq(12, 3)] = encode(0, 'N');
+    s.barricade[sq(13, 3)] = 1;
+    s.checkerStack[1 * 192 + sq(13, 3)] = 1;
+    const t = legalActions(s).find((a) => a.t === 'takeover' && a.to === sq(13, 3))!;
+    applyAction(s, t);
+    expect(s.barricade[sq(13, 3)]).toBe(0);
+    expect(s.barricadeStock[0]).toBe(11);
+    expect(s.stats.takeovers[0]).toBe(1);
+  });
+
+  it('returns every checker in a knocked-down stack to its owner', () => {
+    const s = setup({}, [5, 1]);
+    s.board[sq(12, 3)] = encode(0, 'N');
+    s.barricade[sq(13, 3)] = 1; // Ebony on top of an Ivory checker
+    s.checkerStack[0 * 192 + sq(13, 3)] = 1;
+    s.checkerStack[1 * 192 + sq(13, 3)] = 1;
+    s.barricadeStock = [11, 11];
+    applyAction(s, legalActions(s).find((a) => a.t === 'demolish' && a.to === sq(13, 3))!);
+    expect(s.barricadeStock).toEqual([12, 12]);
+    expect(s.barricade[sq(13, 3)]).toBe(-1);
+  });
+
+  it('respects the limit on barricades in play', () => {
+    const s = setup({ barricadeLimit: 1 });
+    s.board[sq(9, 3)] = encode(0, 'B');
+    s.barricade[sq(10, 3)] = 0;
+    expect(legalActions(s).some((a) => a.t === 'barricade')).toBe(false);
+  });
+});

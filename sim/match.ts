@@ -31,6 +31,7 @@ export interface MatchResult {
   trialFails: number;
   shieldsUsed: number;
   musters: number;
+  takeovers: number;
 }
 
 export function playMatch(rules: Partial<RuleConfig>, first: AgentSpec, second: AgentSpec, seed: number): MatchResult {
@@ -63,6 +64,7 @@ export function playMatch(rules: Partial<RuleConfig>, first: AgentSpec, second: 
     trialFails: st.trialFails,
     shieldsUsed: st.shieldsUsed,
     musters: st.musters[0] + st.musters[1],
+    takeovers: st.takeovers[0] + st.takeovers[1],
   };
 }
 
@@ -90,6 +92,7 @@ export interface Summary {
   trialsPerGame: number;
   trialFailRate: number;
   mustersPerGame: number;
+  takeoversPerGame: number;
   winsBySpec: Record<string, number>;
 }
 
@@ -122,6 +125,7 @@ export function summarize(rs: MatchResult[]): Summary {
     questRoomsPerGame: mean(rs.map((r) => r.questRooms)),
     trialsPerGame: mean(rs.map((r) => r.trials)),
     mustersPerGame: mean(rs.map((r) => r.musters)),
+    takeoversPerGame: mean(rs.map((r) => r.takeovers)),
     trialFailRate: rs.reduce((a, r) => a + r.trialFails, 0) / Math.max(1, rs.reduce((a, r) => a + r.trials, 0)),
     winsBySpec,
   };
