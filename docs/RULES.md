@@ -21,7 +21,7 @@ Each player starts with a small army and keeps the rest of their two chess sets 
 - Back row: knight (b), bishop (c), king (e), rook (g).
 - Second row: six pawns (b-g).
 - Shuffle the deck. Each player draws a hand of 3 cards.
-- Each player takes 4 checkers as barricades.
+- Each player takes the 12 checkers of their color (Ivory red, Ebony black) as barricades. At most 4 of yours may stand on the board at once.
 
 Ivory moves first, but rolls only **one die** on the opening turn (this offsets the first-player advantage).
 
@@ -46,7 +46,9 @@ Ivory moves first, but rolls only **one die** on the opening turn (this offsets 
 
 **Rescue.** Spend a **6** to return one of your jailed pieces to any empty square on your back two rows.
 
-**Barricade.** Ivory's checkers are red, Ebony's are black. Spend any die to place one of your checkers on an empty square next to one of your pieces, in your homeland or the middle. Barricades block movement for both sides. An enemy piece next to a barricade can knock it down with a die of 4 or more.
+**Barricade.** Ivory's checkers are red, Ebony's are black; each player has 12, but at most 4 of yours may stand on the board at once. Spend any die to place one on an empty square next to one of your pieces, in your homeland or the battle zone. Barricades block movement for both sides, and a defender beside its own barricade adds +2. An enemy piece next to a barricade can knock it down with a die of 4 or more; every checker in it goes back to its owner.
+
+**Take over.** With any die, stack one of your checkers on an enemy barricade next to one of your pieces. It becomes yours (and counts toward your 4). It can be taken back the same way, by stacking another checker on top.
 
 **Entering the battle zone.** A piece that moves into the battle zone must stop on an empty square there. It can't attack into the zone, pass straight through it, or act again that turn. It fights from your next turn.
 
@@ -84,7 +86,7 @@ If 300 player-turns pass without a winner, the game is a draw (this has not happ
 | Rescue die | 3+, 5+, 6+ | 6 | Lower thresholds create capture-rescue loops |
 | Pawn reward | promote, reinforce, choice, none | reinforce | No reward → long games and draws; promote → too short, no comebacks |
 | Reward zone | enemy homeland, far back row | enemy homeland | Back row makes rewards rare |
-| Barricades | 0, 4 | 4 | Small effect; gives checkers a job |
+| Checkers | 4 placed, no takeover; 12 with takeovers and 4, 6 or no cap standing; 6 with takeovers | 12, takeovers, max 4 standing | Uses the full checker set; balanced and the highest skill edge. No cap walled both sides in (30% draws) |
 | Victory | king, king or throne | king or throne | Second path adds tension at little cost |
 | Entering the zone | free, stop | stop | Attacking into the zone or passing through it gave the first player 58% wins; stopping keeps it at 52% |
 | Muster | off, each piece once, every entry, once per turn; 6 = queen or rook | each piece once, 6 = rook | Constant fresh pieces and more comebacks; queens from a die roll made skill matter much less |

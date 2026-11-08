@@ -95,6 +95,22 @@ All four are balanced. The +1 skill edge looked low, so it was rechecked with 60
 
 **Adopted: entering stops the piece.** Free entry let the first player strike before the other side could answer.
 
+## Checker takeovers (600 games each, 300 skill games)
+
+[Table](results/sweep-roundcheckers.md). Creator's idea: each side gets a full set of 12 checkers and can stack one on an enemy barricade to take it over.
+
+| Variant | First-player wins | Avg turns | Draws | Takeovers/game | Skill edge |
+|---|---|---|---|---|---|
+| 4 checkers, no takeovers | 49% | 55 | 0% | 0 | 82% |
+| **12 checkers, takeovers, max 4 standing** | **48%** | **54** | **0%** | **1.8** | **84%** |
+| 12 checkers, takeovers, max 6 standing | 56% | 70 | 0% | 6.7 | 77% |
+| 6 checkers, takeovers | 53% | 68 | 0% | 1.7 | 77% |
+| 12 checkers, takeovers, no cap | 45% | 129 | 30% | 5.0 | 50% |
+
+- Without a cap, both sides wall themselves in: games drag past 120 turns, 30% are draws, and skill stops mattering.
+- **Adopted: 12 checkers each, takeovers, at most 4 standing.** Balanced, the highest skill edge measured, and it uses the full checker set.
+- (The bots were also taught to value barricades that shelter their pieces before this round, so all five rows use the same, slightly different, bot.)
+
 ## Quest mode ("two dungeons") (400 games each, 200 skill games)
 
 [Table](results/sweep-roundquests.md). Each side clears three mirrored rooms with card trials (see RULES.md).

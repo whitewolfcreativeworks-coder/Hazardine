@@ -21,7 +21,7 @@ import {
 
 export const LINES: Record<string, string> = {
   table1: 'To play at a table, lay two chessboards and a checkerboard end to end, with the checkerboard in the middle.',
-  table2: "Each player keeps the rest of their two chess sets beside their own homeland. That's your supply. Ivory takes the four red checkers, and Ebony the four black.",
+  table2: "Each player keeps the rest of their two chess sets beside their own homeland. That's your supply. Ivory takes the twelve red checkers, and Ebony the twelve black.",
   table3: 'Shuffle the deck and deal three cards to each player. Put the deck face down beside the battle zone, with room for a face up discard pile. Captured pieces wait beside the board, as prisoners.',
   intro1: "Welcome to Hazardine. In the next few minutes I'll teach you the whole game, on a real board.",
   board1: "The battlefield is three boards laid end to end. On the left is Ivory's homeland, a chessboard.",
@@ -71,11 +71,12 @@ export const LINES: Record<string, string> = {
   cross3: 'Spend any die to deploy it on your back two rows.',
   cross4: 'Your supply is limited to two chess sets, so nobody can build an endless army.',
 
-  bar1: 'Your checkers are barricades. Ivory places the four red checkers, and Ebony the four black.',
+  bar1: 'Your checkers are barricades. Each player has the twelve checkers of their color, but only four of yours can stand on the board at once.',
   bar2: 'Spend any die to place one next to your own piece, in your homeland or the middle.',
   bar3: 'Barricades block movement for everyone, and a defender standing beside its own barricade fights with two extra points.',
-  bar4: 'An enemy piece next to a barricade can knock it down with a four or higher.',
+  bar4: 'An enemy piece next to a barricade can knock it down with a four or higher. Its checkers go back to their owners.',
 
+  bar5: 'Or, with any die, stack one of your checkers on an enemy barricade next to your piece. Now it belongs to you, and so does its defense bonus.',
   win1: 'There are two ways to win.',
   win2: "Capture the enemy king in a fight. Here, Ivory's queen catches the king in the open.",
   win3: "Or move any piece onto the enemy throne. Here, Ivory's knight slips onto Ebony's empty throne.",
@@ -439,6 +440,20 @@ export const CHAPTERS: Chapter[] = [
       await st.play(t, find(t, (a) => a.t === 'demolish' && a.to === sq(10, 3)));
       st.focus({});
       await say;
+      const u = fresh([1, 2]);
+      u.barricade[sq(10, 3)] = 0;
+      u.checkerStack[sq(10, 3)] = 1;
+      put(u, 0, 'B', 9, 3);
+      put(u, 1, 'N', 11, 3);
+      u.toMove = 1;
+      st.show(u);
+      st.focus({ squares: [sq(11, 3)], attacks: [sq(10, 3)] });
+      const say5 = st.say('bar5');
+      await st.wait(2400);
+      await st.play(u, find(u, (a) => a.t === 'takeover' && a.to === sq(10, 3)));
+      st.focus({ squares: [sq(10, 3)] });
+      await say5;
+      st.focus({});
     },
   },
   {
@@ -567,4 +582,4 @@ export const CHAPTERS: Chapter[] = [
 ];
 
 /** The closing demonstration game (seed and agents chosen for a lively, typical game). */
-export const LIVE_GAME = { seed: 9, ivory: 'heuristic:aggressive', ebony: 'heuristic:balanced' };
+export const LIVE_GAME = { seed: 40, ivory: 'heuristic:aggressive', ebony: 'heuristic:balanced' };

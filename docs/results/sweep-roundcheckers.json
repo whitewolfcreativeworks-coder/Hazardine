@@ -1,0 +1,248 @@
+{
+  "games": 600,
+  "skill": 300,
+  "baseRules": {},
+  "rows": [
+    {
+      "name": "4 checkers, no takeovers (current)",
+      "rules": {},
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.49,
+        "drawRate": 0,
+        "avgTurns": 54.71666666666667,
+        "medianTurns": 49,
+        "capturesPerGame": 12.876666666666667,
+        "rescuesPerGame": 4.336666666666667,
+        "rewardsPerGame": 2.0533333333333332,
+        "combatsPerGame": 17.133333333333333,
+        "upsetRate": 0.1293774319066148,
+        "cardDecidedRate": 0.2671206225680934,
+        "attackerWinRate": 0.751556420233463,
+        "comebackRate": 0.7066666666666667,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.676666666666666,
+        "throneWinShare": 0.08,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "mustersPerGame": 12.356666666666667,
+        "takeoversPerGame": 0,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 600
+        }
+      },
+      "skillEdge": 0.8233333333333334,
+      "health": {
+        "score": 88.8,
+        "parts": {
+          "balance": 0.96,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "12 checkers, takeovers, 4 in play",
+      "rules": {
+        "barricades": 12,
+        "barricadeTakeover": true,
+        "barricadeLimit": 4
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.48333333333333334,
+        "drawRate": 0,
+        "avgTurns": 53.46333333333333,
+        "medianTurns": 49,
+        "capturesPerGame": 12.163333333333334,
+        "rescuesPerGame": 4.06,
+        "rewardsPerGame": 2.01,
+        "combatsPerGame": 16.15,
+        "upsetRate": 0.12528379772961817,
+        "cardDecidedRate": 0.26047471620227036,
+        "attackerWinRate": 0.7531475748194014,
+        "comebackRate": 0.7,
+        "skippedTurnRate": 0,
+        "barricadesPerGame": 9.25,
+        "throneWinShare": 0.08,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "mustersPerGame": 12.123333333333333,
+        "takeoversPerGame": 1.79,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 600
+        }
+      },
+      "skillEdge": 0.84,
+      "health": {
+        "score": 88.3,
+        "parts": {
+          "balance": 0.9333333333333333,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0,
+          "luck": 1,
+          "action": 1,
+          "agency": 1
+        }
+      }
+    },
+    {
+      "name": "6 checkers, takeovers",
+      "rules": {
+        "barricades": 6,
+        "barricadeTakeover": true,
+        "barricadeLimit": 0
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.5333333333333333,
+        "drawRate": 0,
+        "avgTurns": 67.99333333333334,
+        "medianTurns": 63,
+        "capturesPerGame": 17.22,
+        "rescuesPerGame": 7.716666666666667,
+        "rewardsPerGame": 1.33,
+        "combatsPerGame": 25.456666666666667,
+        "upsetRate": 0.1884247741259657,
+        "cardDecidedRate": 0.3119025795469425,
+        "attackerWinRate": 0.6764436296975253,
+        "comebackRate": 0.73,
+        "skippedTurnRate": 0.0004902441415825081,
+        "barricadesPerGame": 14.863333333333333,
+        "throneWinShare": 0.056666666666666664,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "mustersPerGame": 13.993333333333334,
+        "takeoversPerGame": 1.7166666666666666,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 600
+        }
+      },
+      "skillEdge": 0.77,
+      "health": {
+        "score": 86.9,
+        "parts": {
+          "balance": 0.8666666666666667,
+          "decisive": 1,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0,
+          "luck": 1,
+          "action": 1,
+          "agency": 0.9975487792920874
+        }
+      }
+    },
+    {
+      "name": "12 checkers, takeovers, 6 in play",
+      "rules": {
+        "barricades": 12,
+        "barricadeTakeover": true,
+        "barricadeLimit": 6
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.5585284280936454,
+        "drawRate": 0.0033333333333333335,
+        "avgTurns": 69.76,
+        "medianTurns": 65,
+        "capturesPerGame": 16.953333333333333,
+        "rescuesPerGame": 7.816666666666666,
+        "rewardsPerGame": 1.29,
+        "combatsPerGame": 25.293333333333333,
+        "upsetRate": 0.18700579862941485,
+        "cardDecidedRate": 0.312467053241961,
+        "attackerWinRate": 0.6702688455455983,
+        "comebackRate": 0.7023411371237458,
+        "skippedTurnRate": 0.000334480122324159,
+        "barricadesPerGame": 15.173333333333334,
+        "throneWinShare": 0.056856187290969896,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "mustersPerGame": 13.876666666666667,
+        "takeoversPerGame": 6.673333333333333,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 598
+        }
+      },
+      "skillEdge": 0.7666666666666667,
+      "health": {
+        "score": 84.7,
+        "parts": {
+          "balance": 0.7658862876254182,
+          "decisive": 0.99,
+          "length": 1,
+          "skill": 1,
+          "comebacks": 0,
+          "luck": 1,
+          "action": 1,
+          "agency": 0.9983275993883792
+        }
+      }
+    },
+    {
+      "name": "12 checkers, takeovers, no cap",
+      "rules": {
+        "barricades": 12,
+        "barricadeTakeover": true,
+        "barricadeLimit": 0
+      },
+      "summary": {
+        "games": 600,
+        "firstPlayerWinRate": 0.45023696682464454,
+        "drawRate": 0.2966666666666667,
+        "avgTurns": 129.41333333333333,
+        "medianTurns": 68,
+        "capturesPerGame": 5.656666666666666,
+        "rescuesPerGame": 2.2333333333333334,
+        "rewardsPerGame": 0.86,
+        "combatsPerGame": 8.583333333333334,
+        "upsetRate": 0.18640776699029127,
+        "cardDecidedRate": 0.27067961165048543,
+        "attackerWinRate": 0.6590291262135922,
+        "comebackRate": 0.33175355450236965,
+        "skippedTurnRate": 0.004816608283535957,
+        "barricadesPerGame": 28.106666666666666,
+        "throneWinShare": 0.14691943127962084,
+        "questWinShare": 0,
+        "questRoomsPerGame": 0,
+        "trialsPerGame": 0,
+        "mustersPerGame": 4.633333333333334,
+        "takeoversPerGame": 4.993333333333333,
+        "trialFailRate": 0,
+        "winsBySpec": {
+          "heuristic:balanced": 422
+        }
+      },
+      "skillEdge": 0.5034965034965035,
+      "health": {
+        "score": 63.1,
+        "parts": {
+          "balance": 0.8009478672985781,
+          "decisive": 0.10999999999999988,
+          "length": 0.6764444444444446,
+          "skill": 0.17832167832167845,
+          "comebacks": 1,
+          "luck": 1,
+          "action": 1,
+          "agency": 0.9759169585823202
+        }
+      }
+    }
+  ]
+}

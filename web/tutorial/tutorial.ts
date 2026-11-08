@@ -113,6 +113,8 @@ function renderBoard() {
     if (s.barricade[i] !== -1) {
       const b = document.createElement('span');
       b.className = `barricade side-${s.barricade[i]}`;
+      const height = s.checkerStack[i] + s.checkerStack[SQUARES + i];
+      if (height > 1) b.dataset.stack = String(height);
       cell.append(b);
     }
     const p = decode(s.board[i]);
